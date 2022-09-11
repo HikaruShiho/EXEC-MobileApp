@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Button, KeyboardAvoidingView } from 'react-native';
 import _Button from '../../components/Button';
+import axios from 'axios';
 
 import { signInWithEmailAndPassword } from '@firebase/auth';
 import { auth } from '../../firebase/config';
@@ -8,16 +9,34 @@ import { auth } from '../../firebase/config';
 import { useSetRecoilState } from 'recoil';
 import { isLoginAtom } from '../../recoil/Atom';
 
-const LogInScreen = ({ navigation }) => {
+const LogInScreen: React.FC = ({ navigation }: any) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const setIsLoginAtom = useSetRecoilState(isLoginAtom);
 
+  /**
+   * Firebaseログインの処理
+   */
   const handleLogin = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      setIsLoginAtom(userCredential.user);
-      navigation.navigate("LocationJudge");
+      const { user } = await signInWithEmailAndPassword(auth, email, password);
+      setIsLoginAtom(user);
+      checkUidAsync(user.uid);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  /**
+   * 本人確認処理 - FirebaseのuidとDBのuidが同一であればホーム画面に遷移
+   * @param {string} uid - Firebaseから取得したuid
+   */
+  const checkUidAsync = async (uid: string) => {
+    try {
+      const { data } = await axios.get(`http://localhost/api/user/${uid}`);
+      if (data.uid === uid) {
+        navigation.navigate("LocationJudge");
+      }
     } catch (error) {
       console.log(error.message);
     }

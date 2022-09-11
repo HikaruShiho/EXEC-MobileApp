@@ -1,17 +1,38 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const MachineCard = ({ onPress }) => {
+const MachineCard = ({onPress, machine }) => {
+
   return (
     <TouchableOpacity
       style={styles.card}
       onPress={onPress}
     >
       <View style={styles.cardInner}>
-        <Image
-          style={{ width: 115, height: 115 }}
-          source={require('../../assets/power_rack.jpg')}
-        />
-        <Text style={styles.machineName}>パワーラック①</Text>
+        {machine.image_path === "power_rack.jpg" &&
+          <Image
+            style={{ width: 115, height: 115 }}
+            source={require('../../assets/power_rack.jpg')}
+          />
+        }
+        {machine.image_path === "half_rack.jpg" &&
+          <Image
+            style={{ width: 115, height: 115 }}
+            source={require('../../assets/half_rack.jpg')}
+          />
+        }
+        {machine.image_path === "smith_machine.jpg" &&
+          <Image
+            style={{ width: 115, height: 115 }}
+            source={require('../../assets/smith_machine.jpg')}
+          />
+        }
+        {machine.image_path === "adjustable_bench.jpg" &&
+          <Image
+            style={{ width: 115, height: 115 }}
+            source={require('../../assets/adjustable_bench.jpg')}
+          />
+        }
+        <Text style={styles.machineName}>{machine.name}</Text>
         <Text style={styles.reseveBtn}>予約状況確認</Text>
       </View>
       <View style={styles.dot} />

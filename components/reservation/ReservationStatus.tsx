@@ -1,18 +1,59 @@
+import { useEffect } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import axios from 'axios';
 
-const ReservationStatus = () => {
+import { useRecoilValue } from 'recoil';
+import { currentGymAtom } from '../../recoil/Atom';
+import { useState } from 'react';
+
+const ReservationStatus = ({ machineId, name, image_path }) => {
+  const currentGym = useRecoilValue(currentGymAtom);
+  const [waitingPeople, setWaitingPeople] = useState<number>(0);
+
+  /**
+   * 待ち人数・待ち時間を取得
+   */
+  useEffect(() => {
+    console.log("待ち人数・待ち時間");
+    (async () => {
+      try {
+        const { data } = await axios.get(`http://localhost/api/reservation/status/${currentGym.id}/${machineId}`);
+        setWaitingPeople(data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    })();
+  }, []);
+
   return (
     <View style={styles.container}>
-      {/* マシンタイトル */}
-      <Text style={styles.machineName}>パワーラック①</Text>
-
-      {/* ステータス */}
+      <Text style={styles.machineName}>{name}</Text>
       <View style={styles.reserveStatusWrap}>
-        <Image
-          style={{ width: 110, height: 110, }}
-          source={require('../../assets/power_rack.jpg')}
-        />
+        {image_path === "power_rack.jpg" &&
+          <Image
+            style={{ width: 110, height: 110 }}
+            source={require('../../assets/power_rack.jpg')}
+          />
+        }
+        {image_path === "half_rack.jpg" &&
+          <Image
+            style={{ width: 110, height: 110 }}
+            source={require('../../assets/half_rack.jpg')}
+          />
+        }
+        {image_path === "smith_machine.jpg" &&
+          <Image
+            style={{ width: 110, height: 110 }}
+            source={require('../../assets/smith_machine.jpg')}
+          />
+        }
+        {image_path === "adjustable_bench.jpg" &&
+          <Image
+            style={{ width: 110, height: 110 }}
+            source={require('../../assets/adjustable_bench.jpg')}
+          />
+        }
         <View style={styles.statusWrap}>
           <View style={styles.statusBox}>
             <View style={styles.statusBoxLeft}>
@@ -20,7 +61,7 @@ const ReservationStatus = () => {
               <Text style={styles.statusTitle}>現在の{"\n"}待ち人数</Text>
             </View>
             <View style={styles.statusBoxRight}>
-              <Text style={styles.statusText}><Text style={styles.statusNumText}>3</Text>人</Text>
+              <Text style={styles.statusText}><Text style={styles.statusNumText}>{waitingPeople}</Text>人</Text>
             </View>
           </View>
           <View style={styles.statusBox}>
@@ -29,7 +70,7 @@ const ReservationStatus = () => {
               <Text style={styles.statusTitle}>現在の{"\n"}待ち時間</Text>
             </View>
             <View style={styles.statusBoxRight}>
-              <Text style={styles.statusText}>約<Text style={styles.statusNumText}>30</Text>分</Text>
+              <Text style={styles.statusText}>約<Text style={styles.statusNumText}>{waitingPeople * 20}</Text>分</Text>
             </View>
           </View>
         </View>

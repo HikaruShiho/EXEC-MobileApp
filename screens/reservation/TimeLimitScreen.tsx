@@ -3,6 +3,7 @@ import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
 
 const TimeLimitScreen = ({ navigation }) => {
+
   return (
     <View style={styles.container}>
       <Text style={styles.limitText}>残り時間</Text>

@@ -2,7 +2,8 @@ import { StyleSheet, View, Text, Alert } from 'react-native';
 import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
 
-const ReserveCancelScreen = ({ navigation }) => {
+const ReserveCancelScreen = ({ route, navigation }) => {
+  const { machine, reservedInfo } = route.params;
 
   const alert = () => {
     Alert.alert(
@@ -12,19 +13,21 @@ const ReserveCancelScreen = ({ navigation }) => {
         text: '確認',
         onPress: () => navigation.navigate('Home')
       }]);
-
-
   }
 
   return (
     <View style={styles.container}>
-      <ReservationStatus />
+      <ReservationStatus
+        machineId={machine.id}
+        name={machine.name}
+        image_path={machine.image_path}
+      />
       <Text style={styles.doneMessege}>上記予約を取消します。{"\n"}取消した予約は復元できません。</Text>
 
       <View style={styles.buttonWrap}>
         <View style={styles.button}>
           <Button
-            onPress={() => navigation.navigate('Reserved')}
+            onPress={() => navigation.navigate('Reserved', { reservedInfo: reservedInfo })}
             title={"戻る"}
             bgColor={"#010440"}
             color={"#fff"}
