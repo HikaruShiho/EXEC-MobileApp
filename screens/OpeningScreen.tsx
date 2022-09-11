@@ -2,7 +2,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Button from '../components/Button';
 
-const OpeningScreen = ({ navigation }) => {
+const OpeningScreen : React.FC = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
@@ -12,7 +12,7 @@ const OpeningScreen = ({ navigation }) => {
         color="#010440"
         style={{ textAlign: "center" }}
       />
-      <Text style={styles.titleText}>サービス名が入る</Text>
+      <Text style={styles.titleText}>ExEc</Text>
       <View style={{ paddingTop: 32 }}>
         <Button
           onPress={() => navigation.navigate("Register")}

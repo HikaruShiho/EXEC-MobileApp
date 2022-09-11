@@ -54,8 +54,8 @@ const AppNavigator = () => {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName={"Opening"}>
-                {loginState ? (
+            <Stack.Navigator initialRouteName={"LocationJudge"}>
+                {/* {loginState ? (
                     <Stack.Screen
                         name="Home"
                         component={HomeScreen}
@@ -70,8 +70,8 @@ const AppNavigator = () => {
                         component={OpeningScreen}
                         options={{ headerShown: false }}
                     />
-                )}
-                {/* <Stack.Screen
+                )} */}
+                <Stack.Screen
                     name="Home"
                     component={HomeScreen}
                     options={{
@@ -83,7 +83,7 @@ const AppNavigator = () => {
                     name="Opening"
                     component={OpeningScreen}
                     options={{ headerShown: false }}
-                /> */}
+                />
                 <Stack.Screen
                     name="Register"
                     component={RegisterScreen}

@@ -5,7 +5,12 @@ export const isLoginAtom = atom({
     default: null,
 });
 
-export const gym = atom({
-    key: 'gym',
-    default: "",
+export const currentGymAtom = atom({
+    key: 'currentGymAtom',
+    default: null,
+});
+
+export const reservedInfoAtom = atom({
+    key: 'reservedInfoAtom',
+    default: null,
 });
