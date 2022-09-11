@@ -2,12 +2,39 @@ import { StyleSheet, View, Text } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
+import axios from 'axios';
 
-const ReserveScreen = ({ navigation }) => {
+import { useRecoilValue } from 'recoil';
+import { currentGymAtom } from '../../recoil/Atom';
+
+const ReserveCheckScreen = ({ route, navigation }) => {
+  const currentGym = useRecoilValue(currentGymAtom);
+
+  /**
+   * reservationテーブルにデータを追加
+   * @param  {void}
+   * @return {viod}
+   */
+  const reservationAsync = async () => {
+    try {
+      await axios.post('http://localhost/api/reservation', {
+        user_id: 1,
+        gym_id: currentGym.id,
+        machine_id: route.params.machineId,
+      });
+      navigation.navigate('ReserveDone')
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   return (
     <View style={styles.container}>
-      <ReservationStatus />
+      <ReservationStatus
+        machineId={route.params.machineId}
+        name={route.params.name}
+        image_path={route.params.image_path}
+      />
       <View style={styles.cationWrap}>
         <View style={styles.cationHead}>
           <FontAwesome name="exclamation-circle" size={22} color="#fff" />
@@ -22,30 +49,12 @@ const ReserveScreen = ({ navigation }) => {
       </View>
       <View style={{ paddingTop: 24 }}>
         <Button
-          onPress={() => navigation.navigate('ReserveDone')}
+          onPress={reservationAsync}
           title={"予約を確定する"}
           bgColor={"#BFF205"}
           color={"#010440"}
         />
       </View>
-      {/* <View style={{ paddingTop: 24, flexDirection: "row" }}>
-        <View style={{ width: "50%", paddingRight: 8 }}>
-          <Button
-            onPress={aaa}
-            title={"戻る"}
-            bgColor={"#BFF205"}
-            color={"#010440"}
-          />
-        </View>
-        <View style={{ width: "50%", paddingLeft: 8 }}>
-          <Button
-            onPress={aaa}
-            title={"予約を取消す"}
-            bgColor={"#BFF205"}
-            color={"#010440"}
-          />
-        </View>
-      </View> */}
     </View >
   );
 }
@@ -91,4 +100,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReserveScreen;
+export default ReserveCheckScreen;

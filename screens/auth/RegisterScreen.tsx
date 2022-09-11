@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Button, KeyboardAvoidingView } from 'react-native';
 import _Button from '../../components/Button';
+import axios from 'axios';
 
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { auth } from '../../firebase/config';
 
 import { useSetRecoilState } from 'recoil';
 import { isLoginAtom } from '../../recoil/Atom';
-import React from 'react';
 
 const RegisterScreen: React.FC = ({ navigation }: any) => {
   const [email, setEmail] = useState<string>('');
@@ -16,14 +16,27 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
 
   /**
    * 【Firebase】ユーザー新規登録処理
-   * @return {void}
-   * @constant {userCredential = Firebase auth object}
    */
   const handleRegister = async () => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      setIsLoginAtom(userCredential.user);
-      navigation.navigate("LocationJudge");
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      if (saveUidApi(user.uid)) {
+        setIsLoginAtom(user);
+        navigation.navigate("LocationJudge")
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  /**
+   * DBにuidを挿入
+   * @param {string} uid - Firebaseから発行されたID
+   * @return {object}
+   */
+  const saveUidApi = async (uid: string) => {
+    try {
+      return await axios.post('http://localhost/api/user', { uid: uid });
     } catch (error) {
       console.log(error.message);
     }
