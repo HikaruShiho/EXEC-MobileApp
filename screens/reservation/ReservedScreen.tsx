@@ -1,45 +1,39 @@
-import { StyleSheet, View, Text } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
 import axios from 'axios';
 
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { isLoginAtom, currentGymAtom } from '../../recoil/Atom';
+import { useRecoilValue } from 'recoil';
+import { reservedInfoAtom } from '../../recoil/Atom';
 
-const ReservedScreen = ({ route, navigation }) => {
-  const { machine, id } = route.params.reservedInfo;
+const ReservedScreen: React.FC = ({ navigation }: any) => {
+  /**
+   * グローバルステート
+   * @const {reservedInfo} 予約中マシン情報
+   */
+  const reservedInfo = useRecoilValue(reservedInfoAtom);
 
   /**
    * チェックインの処理
-   * @param  {viod}
-   * @return {viod}
    */
   const handleCheckIn = async () => {
     try {
-      await axios.put(`http://localhost/api/reservation/checkin/${id}`);
+      await axios.put(`http://localhost/api/reservation/checkin/${reservedInfo.id}`);
       navigation.navigate('TimeLimit')
     } catch (error) {
       console.log(error.message);
     }
   }
 
-  const loginState = useRecoilValue(isLoginAtom);
-  const setIsLoginAtom = useSetRecoilState(isLoginAtom);
-
-
   return (
     <View style={styles.container}>
-
       <ReservationStatus
-        machineId={machine.id}
-        name={machine.name}
-        image_path={machine.image_path}
+        machineId={reservedInfo ? reservedInfo.machine.id : null}
+        name={reservedInfo ? reservedInfo.machine.name : null}
+        image_path={reservedInfo ? reservedInfo.machine.image_path: null}
       />
       <View style={styles.buttonWrap}>
-
-        <Text onPress={() => setIsLoginAtom(loginState ? false : true)}>
-          aaaaaaaaa
-        </Text>
         <View style={styles.checkInButton}>
           <Button
             onPress={handleCheckIn}
@@ -58,10 +52,7 @@ const ReservedScreen = ({ route, navigation }) => {
         </View>
         <View style={styles.button}>
           <Button
-            onPress={() => navigation.navigate('ReserveCancel', {
-              machine: machine,
-              reservedInfo: route.params.reservedInfo
-            })}
+            onPress={() => navigation.navigate('ReserveCancel')}
             title={"予約を取り消す"}
             bgColor={"#F64E4E"}
             color={"#fff"}

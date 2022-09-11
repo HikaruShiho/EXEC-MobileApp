@@ -1,13 +1,27 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-const ReservedMachine = ({ onPress, machine }) => {
+import { useRecoilValue } from 'recoil';
+import { reservedInfoAtom } from '../../recoil/Atom';
+
+type Props = {
+  onPress: () => void;
+}
+
+const ReservedMachine: React.FC<Props> = ({ onPress }) => {
+  /**
+   * グローバルステート
+   * @const {reservedInfo} 予約中マシン情報
+   */
+  const reservedInfo = useRecoilValue(reservedInfoAtom);
+
   return (
     <TouchableOpacity
       style={styles.upperBar}
       onPress={onPress}
     >
-      <Text style={styles.messageText}>{machine}を予約中！</Text>
+      <Text style={styles.messageText}>{reservedInfo.machine.name}を予約中！</Text>
       <AntDesign name="arrowright" size={20} color="#fff" style={styles.iconArrow} />
     </TouchableOpacity>
   )

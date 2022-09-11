@@ -14,41 +14,22 @@ type MachineData = {
   image_path: string;
 }
 
-type ReservedData = {
-  id: number;
-  gym_id: number;
-  machine_id: number;
-  user_id: number;
-  machine: {
-    id: number;
-    image_path: string;
-    name: string;
-  }
-  is_canceled: number;
-  start_at: string;
-  end_at: string;
-}
-
 const HomeScreen: React.FC = ({ navigation }: any) => {
   /**
    * グローバルステート
    * @const {loginState} ログイン情報
    * @const {currentGym} 入店中ジム情報
-   * @const {machineReserved} 予約中マシン情報
+   * @const {reservedInfo} 予約中マシン情報
    */
   const loginState = useRecoilValue(isLoginAtom);
   const currentGym = useRecoilValue(currentGymAtom);
-  // const reservedInfo = useRecoilValue(reservedInfoAtom);
+  const reservedInfo = useRecoilValue(reservedInfoAtom);
   const setReservedInfoAtom = useSetRecoilState(reservedInfoAtom);
-
-  const [isReserved, setIsReserved] = useState<Boolean>(false);
-  const [reservedInfo, setReservedInfo] = useState<ReservedData>(null);
   const [machines, setMachines] = useState<MachineData[]>([]);
 
   useEffect(() => {
-    console.log("ホーム画面");
-    getReservedAsync();
     getMachineAllAsync();
+    getReservedAsync();
   }, []);
 
   /**
@@ -74,11 +55,9 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
     try {
       const { data } = await axios.get(`http://localhost/api/reservation/${1}/${currentGym.id}`);
       if (data) {
-        setIsReserved(true);
-        setReservedInfo(data);
+        setReservedInfoAtom(data);
       } else {
-        setIsReserved(false);
-        setReservedInfo(null);
+        setReservedInfoAtom(null);
       }
     } catch (error) {
       console.log(error.message);
@@ -91,15 +70,8 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
         title='3秒後にプッシュ通知する'
         onPress={scheduleNotificationAsync}
       /> */}
-      {isReserved &&
-        <ReservedMachine
-          onPress={
-            () => navigation.navigate('Reserved', {
-              reservedInfo: reservedInfo
-            })
-          }
-          machine={reservedInfo?.machine.name}
-        />
+      {reservedInfo &&
+        <ReservedMachine onPress={() => navigation.navigate('Reserved')} />
       }
       <View style={styles.listMachineWrap}>
         {machines.map((machine) => (

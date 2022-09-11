@@ -1,8 +1,9 @@
+import React, { useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import Button from '../../components/Button';
 
-const ReserveDoneScreen = ({ navigation }) => {
+const ReserveDoneScreen: React.FC = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>

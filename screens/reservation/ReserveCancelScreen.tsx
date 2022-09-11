@@ -1,33 +1,60 @@
+import React from 'react';
 import { StyleSheet, View, Text, Alert } from 'react-native';
 import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
+import axios from 'axios';
 
-const ReserveCancelScreen = ({ route, navigation }) => {
-  const { machine, reservedInfo } = route.params;
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { reservedInfoAtom } from '../../recoil/Atom';
 
-  const alert = () => {
+const ReserveCancelScreen: React.FC = ({ navigation }: any) => {
+  /**
+   * グローバルステート
+   * @const {reservedInfo} 予約中マシン情報
+   */
+  const reservedInfo = useRecoilValue(reservedInfoAtom);
+  const setReservedInfoAtom = useSetRecoilState(reservedInfoAtom);
+
+  /**
+   * 予約を取り消す押下でアラートを表示
+   */
+  const confirmCancel = () => {
     Alert.alert(
       'パワーラック①',
       '上記予約を取り消しました',
       [{
         text: '確認',
-        onPress: () => navigation.navigate('Home')
+        onPress: navigation.navigate('Home')
       }]);
+  }
+
+  /**
+   * 予約キャンセルの処理
+   * T_reservationの "is_canceled" を "1" に更新
+   */
+  const handleReservationCancel = async () => {
+    try {
+      await axios.put(`http://localhost/api/reservation/cancel/${reservedInfo.id}`);
+    } catch (error) {
+      console.log(error.message);
+    }
+    setReservedInfoAtom(null);
+    confirmCancel();
   }
 
   return (
     <View style={styles.container}>
       <ReservationStatus
-        machineId={machine.id}
-        name={machine.name}
-        image_path={machine.image_path}
+        machineId={reservedInfo ? reservedInfo.machine.id : null}
+        name={reservedInfo ? reservedInfo.machine.name : null}
+        image_path={reservedInfo ? reservedInfo.machine.image_path : null}
       />
       <Text style={styles.doneMessege}>上記予約を取消します。{"\n"}取消した予約は復元できません。</Text>
 
       <View style={styles.buttonWrap}>
         <View style={styles.button}>
           <Button
-            onPress={() => navigation.navigate('Reserved', { reservedInfo: reservedInfo })}
+            onPress={() => navigation.navigate('Reserved')}
             title={"戻る"}
             bgColor={"#010440"}
             color={"#fff"}
@@ -35,7 +62,7 @@ const ReserveCancelScreen = ({ route, navigation }) => {
         </View>
         <View style={styles.button}>
           <Button
-            onPress={alert}
+            onPress={handleReservationCancel}
             title={"予約を取り消す"}
             bgColor={"#F64E4E"}
             color={"#fff"}

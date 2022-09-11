@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput } from 'react-native';
 import Button from '../components/Button';
 import axios from 'axios';
@@ -24,7 +24,7 @@ type GymData = {
   };
 }
 
-const LocationJudgeScreen = ({ navigation }) => {
+const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
   const [searchWord, setSearchWord] = useState<string>("");
   const [gyms, setGyms] = useState<GymData[]>([]);
   const setCurrentGymAtom = useSetRecoilState(currentGymAtom);

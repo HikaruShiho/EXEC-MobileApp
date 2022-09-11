@@ -1,31 +1,41 @@
+import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
 import axios from 'axios';
 
-import { useRecoilValue } from 'recoil';
-import { currentGymAtom } from '../../recoil/Atom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { currentGymAtom, reservedInfoAtom } from '../../recoil/Atom';
 
-const ReserveCheckScreen = ({ route, navigation }) => {
+/**
+ * @param {object} route.params - machineId, name, image_path
+ */
+const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
+  /**
+   * グローバルステート
+   * @const {currentGym} 入店中ジム情報
+   */
   const currentGym = useRecoilValue(currentGymAtom);
+  const setReservedInfo = useSetRecoilState(reservedInfoAtom);
 
   /**
    * reservationテーブルにデータを追加
-   * @param  {void}
-   * @return {viod}
    */
   const reservationAsync = async () => {
     try {
-      await axios.post('http://localhost/api/reservation', {
+      const { data } = await axios.post('http://localhost/api/reservation', {
         user_id: 1,
         gym_id: currentGym.id,
         machine_id: route.params.machineId,
       });
-      navigation.navigate('ReserveDone')
+      console.log(data);
+
+      setReservedInfo(data);
     } catch (error) {
       console.log(error.message);
     }
+    navigation.navigate('ReserveDone');
   }
 
   return (
