@@ -1,8 +1,9 @@
+import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Button from '../components/Button';
 
-const OpeningScreen : React.FC = ({ navigation }: any) => {
+const OpeningScreen: React.FC = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
@@ -42,9 +43,9 @@ const styles = StyleSheet.create({
   },
   titleText: {
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
-    paddingTop: 16,
+    paddingTop: 8,
   },
 });
 

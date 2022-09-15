@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import axios from 'axios';
@@ -7,7 +7,13 @@ import { useRecoilValue } from 'recoil';
 import { currentGymAtom } from '../../recoil/Atom';
 import { useState } from 'react';
 
-const ReservationStatus = ({ machineId, name, image_path }) => {
+type Props = {
+  machineId: number | null;
+  name: string | null;
+  image_path: string | null;
+}
+
+const ReservationStatus: React.FC<Props> = ({ machineId, name, image_path }) => {
   const currentGym = useRecoilValue(currentGymAtom);
   const [waitingPeople, setWaitingPeople] = useState<number>(0);
 
@@ -15,7 +21,6 @@ const ReservationStatus = ({ machineId, name, image_path }) => {
    * 待ち人数・待ち時間を取得
    */
   useEffect(() => {
-    console.log("待ち人数・待ち時間");
     (async () => {
       try {
         const { data } = await axios.get(`http://localhost/api/reservation/status/${currentGym.id}/${machineId}`);

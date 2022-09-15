@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, TextInput, KeyboardAvoidingView, ScrollView } from 'react-native';
 import Button from '../components/Button';
 import axios from 'axios';
 
-import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { currentGymAtom } from '../recoil/Atom';
 
 type GymData = {
@@ -24,7 +24,7 @@ type GymData = {
   };
 }
 
-const LocationJudgeScreen = ({ navigation }) => {
+const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
   const [searchWord, setSearchWord] = useState<string>("");
   const [gyms, setGyms] = useState<GymData[]>([]);
   const setCurrentGymAtom = useSetRecoilState(currentGymAtom);
@@ -33,27 +33,32 @@ const LocationJudgeScreen = ({ navigation }) => {
    * 登録している全ジムデータを取得
    */
   useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await axios.get(`http://localhost/api/gym`);
-        setGyms(data);
-      } catch (error) {
-        console.log(error.message);
-      }
-    })();
+    getGymAll();
   }, []);
+
+  const getGymAll = async () => {
+    try {
+      const { data } = await axios.get(`http://localhost/api/gym`);
+      setGyms(data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   /**
    * 店舗一覧ボタンを押下時の処理
-   * @param  {int} i - MachineData[]のインデックス番号
+   * @param i MachineData[]のインデックス番号
    */
-  const handleCurrentGym = (i: number) => {
+  const handleCurrentGym = (i: number): void => {
     setCurrentGymAtom(gyms[i]);
     navigation.navigate("Home");
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior="padding"
+    >
       <Text style={styles.titleText}>入店している施設を検索後{"\n"}選択してください。</Text>
       <TextInput
         style={styles.input}
@@ -64,19 +69,19 @@ const LocationJudgeScreen = ({ navigation }) => {
         onChangeText={setSearchWord}
         value={searchWord}
       />
-      <View style={{ paddingTop: 20 }}>
-        {gyms.map((machine, i) => (
+      <ScrollView style={{ paddingTop: 20 }}>
+        {gyms.map((gym, i) => (
           <View style={{ paddingTop: 16 }} key={i}>
             <Button
               onPress={() => handleCurrentGym(i)}
-              title={machine.name}
+              title={gym.name}
               bgColor={"#010440"}
               color={"#fff"}
             />
           </View>
         ))}
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -96,9 +101,12 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#fff',
-    padding: 12,
+    paddingTop: 16,
+    paddingBottom: 16,
+    paddingLeft: 12,
+    paddingRight: 12,
     borderRadius: 8,
-    fontSize: 18,
+    fontSize: 20,
     marginTop: 32,
   },
 });

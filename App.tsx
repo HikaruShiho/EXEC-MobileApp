@@ -1,15 +1,14 @@
-import { SafeAreaView, StyleSheet, Text } from 'react-native';
+import React from 'react';
+import { SafeAreaView, StyleSheet, StatusBar } from 'react-native';
 import AppNavigator from './navigation/AppNavigator';
-import AnimatedSplash from "react-native-animated-splash-screen";
 
 import { RecoilRoot } from 'recoil';
-import Header from './components/Header';
 
-export default function App() {
+const App: React.FC = () => {
   return (
     <RecoilRoot>
+      <StatusBar barStyle="light-content" />
       <SafeAreaView style={styles.safeAreaView}>
-        <Header />
         <AppNavigator />
       </SafeAreaView>
     </RecoilRoot>
@@ -19,5 +18,8 @@ export default function App() {
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
+    backgroundColor: "#010440",
   },
 });
+
+export default App;

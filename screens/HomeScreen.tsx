@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Button } from 'react-native';
+import { StyleSheet, View, ScrollView, Text } from 'react-native';
 import MachineCard from '../components/reservation/MachineCard';
 import ReservedMachine from '../components/reservation/ReservedMachine';
 import axios from 'axios';
 import * as Notifications from 'expo-notifications';
 
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { isLoginAtom, currentGymAtom, reservedInfoAtom } from '../recoil/Atom';
 
 type MachineData = {
@@ -14,72 +14,38 @@ type MachineData = {
   image_path: string;
 }
 
-type ReservedData = {
-  id: number;
-  gym_id: number;
-  machine_id: number;
-  user_id: number;
-  machine: {
-    id: number;
-    image_path: string;
-    name: string;
-  }
-  is_canceled: number;
-  start_at: string;
-  end_at: string;
-}
-
 const HomeScreen: React.FC = ({ navigation }: any) => {
-  /**
-   * グローバルステート
-   * @const {loginState} ログイン情報
-   * @const {currentGym} 入店中ジム情報
-   * @const {machineReserved} 予約中マシン情報
-   */
   const loginState = useRecoilValue(isLoginAtom);
   const currentGym = useRecoilValue(currentGymAtom);
-  // const reservedInfo = useRecoilValue(reservedInfoAtom);
-  const setReservedInfoAtom = useSetRecoilState(reservedInfoAtom);
-
-  const [isReserved, setIsReserved] = useState<Boolean>(false);
-  const [reservedInfo, setReservedInfo] = useState<ReservedData>(null);
+  const [reservedInfo, setReservedInfoAtom] = useRecoilState(reservedInfoAtom);
   const [machines, setMachines] = useState<MachineData[]>([]);
 
+
   useEffect(() => {
-    console.log("ホーム画面");
-    getReservedAsync();
+    console.log("ssssss");
     getMachineAllAsync();
+    getReservedAsync();
   }, []);
 
   /**
    * 入店しているジムのマシンを取得
-   * @param  {void}
-   * @return {viod}
    */
   const getMachineAllAsync = async () => {
     try {
       const { data } = await axios.get(`http://localhost/api/gym/${currentGym.id}`);
       setMachines(data.machines);
     } catch (error) {
-      console.log(error.message);
+      console.log(error.response.data);
     }
   }
 
   /**
    * 現在予約中のマシンを取得
-   * @param  {void}
-   * @return {viod}
    */
   const getReservedAsync = async () => {
     try {
       const { data } = await axios.get(`http://localhost/api/reservation/${1}/${currentGym.id}`);
-      if (data) {
-        setIsReserved(true);
-        setReservedInfo(data);
-      } else {
-        setIsReserved(false);
-        setReservedInfo(null);
-      }
+      setReservedInfoAtom(data ? data : null);
     } catch (error) {
       console.log(error.message);
     }
@@ -91,15 +57,8 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
         title='3秒後にプッシュ通知する'
         onPress={scheduleNotificationAsync}
       /> */}
-      {isReserved &&
-        <ReservedMachine
-          onPress={
-            () => navigation.navigate('Reserved', {
-              reservedInfo: reservedInfo
-            })
-          }
-          machine={reservedInfo?.machine.name}
-        />
+      {reservedInfo &&
+        <ReservedMachine onPress={() => navigation.navigate('ReservedStack')} />
       }
       <View style={styles.listMachineWrap}>
         {machines.map((machine) => (
