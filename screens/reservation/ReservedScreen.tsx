@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
 import axios from 'axios';
@@ -28,37 +28,45 @@ const ReservedScreen: React.FC = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <ReservationStatus
-        machineId={reservedInfo ? reservedInfo.machine.id : null}
-        name={reservedInfo ? reservedInfo.machine.name : null}
-        image_path={reservedInfo ? reservedInfo.machine.image_path: null}
-      />
-      <View style={styles.buttonWrap}>
-        <View style={styles.checkInButton}>
-          <Button
-            onPress={handleCheckIn}
-            title={"チェックイン"}
-            bgColor={"#BFF205"}
-            color={"#010440"}
+      {reservedInfo ? (
+        <>
+          <ReservationStatus
+            machineId={reservedInfo ? reservedInfo.machine.id : null}
+            name={reservedInfo ? reservedInfo.machine.name : null}
+            image_path={reservedInfo ? reservedInfo.machine.image_path : null}
           />
+          <View style={styles.buttonWrap}>
+            <View style={styles.checkInButton}>
+              <Button
+                onPress={handleCheckIn}
+                title={"チェックイン"}
+                bgColor={"#BFF205"}
+                color={"#010440"}
+              />
+            </View>
+            <View style={styles.button}>
+              <Button
+                onPress={() => navigation.goBack()}
+                title={"戻る"}
+                bgColor={"#010440"}
+                color={"#fff"}
+              />
+            </View>
+            <View style={styles.button}>
+              <Button
+                onPress={() => navigation.navigate('ReserveCancel')}
+                title={"予約キャンセル"}
+                bgColor={"#F64E4E"}
+                color={"#fff"}
+              />
+            </View>
+          </View>
+        </>
+      ) : (
+        <View style={styles.reserveNone}>
+          <Text style={{ fontSize: 20 }}>予約はありません</Text>
         </View>
-        <View style={styles.button}>
-          <Button
-            onPress={() => navigation.navigate('Home')}
-            title={"戻る"}
-            bgColor={"#010440"}
-            color={"#fff"}
-          />
-        </View>
-        <View style={styles.button}>
-          <Button
-            onPress={() => navigation.navigate('ReserveCancel')}
-            title={"予約を取り消す"}
-            bgColor={"#F64E4E"}
-            color={"#fff"}
-          />
-        </View>
-      </View>
+      )}
     </View>
   );
 }
@@ -82,6 +90,11 @@ const styles = StyleSheet.create({
   button: {
     width: "50%",
     padding: 6
+  },
+  reserveNone: {
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center"
   },
 });
 

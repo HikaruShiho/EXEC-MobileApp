@@ -5,9 +5,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { useRecoilValue } from 'recoil';
 import { reservedInfoAtom } from '../../recoil/Atom';
 
-type Props = {
-  onPress: () => void;
-}
+type Props = { onPress: () => void; }
 
 const ReservedMachine: React.FC<Props> = ({ onPress }) => {
   /**
@@ -21,7 +19,7 @@ const ReservedMachine: React.FC<Props> = ({ onPress }) => {
       style={styles.upperBar}
       onPress={onPress}
     >
-      <Text style={styles.messageText}>{reservedInfo.machine.name}を予約中！</Text>
+      <Text style={styles.messageText}>{reservedInfo ? reservedInfo.machine.name : null}を予約中！</Text>
       <AntDesign name="arrowright" size={20} color="#fff" style={styles.iconArrow} />
     </TouchableOpacity>
   )

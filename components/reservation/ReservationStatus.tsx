@@ -21,7 +21,6 @@ const ReservationStatus: React.FC<Props> = ({ machineId, name, image_path }) => 
    * 待ち人数・待ち時間を取得
    */
   useEffect(() => {
-    console.log("待ち人数・待ち時間");
     (async () => {
       try {
         const { data } = await axios.get(`http://localhost/api/reservation/status/${currentGym.id}/${machineId}`);

@@ -1,16 +1,14 @@
-import { StyleSheet, View, Text } from 'react-native';
-import ReservationStatus from '../../components/reservation/ReservationStatus';
+import React from 'react';
+import { StyleSheet, View, Alert } from 'react-native';
 import Button from '../../components/Button';
+import Timer from '../../components/reservation/Timer';
 import axios from 'axios';
 
 import { useRecoilState } from 'recoil';
 import { reservedInfoAtom } from '../../recoil/Atom';
+import { CommonActions } from '@react-navigation/native';
 
-const TimeLimitScreen = ({ navigation }) => {
-  /**
-   * グローバルステート
-   * @const {reservedInfo} 予約中マシン情報
-   */
+const TimeLimitScreen: React.FC = ({ navigation }: any) => {
   const [reservedInfo, setReservedInfo] = useRecoilState(reservedInfoAtom);
 
   /**
@@ -18,23 +16,36 @@ const TimeLimitScreen = ({ navigation }) => {
    */
   const handleCheckOut = async () => {
     try {
-      console.log(reservedInfo.id);
-      const { data } = await axios.put(`http://localhost/api/reservation/checkout/${reservedInfo.id}`);
+      await axios.put(`http://localhost/api/reservation/checkout/${reservedInfo.id}`);
       setReservedInfo(null);
-      console.log(data);
-
-      navigation.navigate('Home')
     } catch (error) {
       console.log(error.message);
     }
-    console.log(reservedInfo);
+    confirmCheckOut();
+  }
 
+  /**
+   * チェックアウトの確認をアラート表示
+   */
+  const confirmCheckOut = (): void => {
+    const resetAction = CommonActions.reset({
+      index: 1,
+      routes: [
+        { name: 'Home' }
+      ]
+    });
+    Alert.alert(
+      `チェックアウト完了`,
+      'ご利用ありがとうございました',
+      [{
+        text: 'OK',
+        onPress: navigation.dispatch(resetAction)
+      }]);
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.limitText}>残り時間</Text>
-      <Text style={styles.timer}>20:00</Text>
+      <Timer handleCheckOut={handleCheckOut}/>
       <View style={styles.checkOutButton}>
         <Button
           onPress={handleCheckOut}
@@ -53,29 +64,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 40,
   },
-  limitText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#A5A5A5",
-    textAlign: "center"
-
-  },
-  timer: {
-    fontSize: 60,
-    fontWeight: "bold",
-    color: "#010440",
-    textAlign: "center",
-    paddingTop: 12
-  },
-  // buttonWrap: {
-  //   flexDirection: "row",
-  //   flexWrap: "wrap",
-  //   justifyContent: "center",
-  //   paddingTop: 24,
-  // },
   checkOutButton: {
     width: "100%",
-    paddingTop: 24
+    paddingTop: 40,
   },
 });
 

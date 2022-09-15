@@ -1,10 +1,11 @@
 import React from 'react';
 import { StyleSheet, View, Text, Alert } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
 import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
 import axios from 'axios';
 
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { reservedInfoAtom } from '../../recoil/Atom';
 
 const ReserveCancelScreen: React.FC = ({ navigation }: any) => {
@@ -12,19 +13,24 @@ const ReserveCancelScreen: React.FC = ({ navigation }: any) => {
    * グローバルステート
    * @const {reservedInfo} 予約中マシン情報
    */
-  const reservedInfo = useRecoilValue(reservedInfoAtom);
-  const setReservedInfoAtom = useSetRecoilState(reservedInfoAtom);
+  const [reservedInfo, setReservedInfoAtom] = useRecoilState(reservedInfoAtom);
 
   /**
    * 予約を取り消す押下でアラートを表示
    */
-  const confirmCancel = () => {
+  const confirmCancel = (): void => {
+    const resetAction = CommonActions.reset({
+      index: 1,
+      routes: [
+        { name: 'Home' }
+      ]
+    });
     Alert.alert(
       'パワーラック①',
       '上記予約を取り消しました',
       [{
         text: '確認',
-        onPress: navigation.navigate('Home')
+        onPress: navigation.dispatch(resetAction)
       }]);
   }
 
@@ -35,10 +41,10 @@ const ReserveCancelScreen: React.FC = ({ navigation }: any) => {
   const handleReservationCancel = async () => {
     try {
       await axios.put(`http://localhost/api/reservation/cancel/${reservedInfo.id}`);
+      setReservedInfoAtom(null);
     } catch (error) {
       console.log(error.message);
-    }
-    setReservedInfoAtom(null);
+    };
     confirmCancel();
   }
 
@@ -54,7 +60,7 @@ const ReserveCancelScreen: React.FC = ({ navigation }: any) => {
       <View style={styles.buttonWrap}>
         <View style={styles.button}>
           <Button
-            onPress={() => navigation.navigate('Reserved')}
+            onPress={() => navigation.goBack()}
             title={"戻る"}
             bgColor={"#010440"}
             color={"#fff"}

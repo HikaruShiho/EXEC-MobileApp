@@ -29,13 +29,11 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
         gym_id: currentGym.id,
         machine_id: route.params.machineId,
       });
-      console.log(data);
-
       setReservedInfo(data);
+      navigation.navigate('ReserveDone');
     } catch (error) {
       console.log(error.message);
     }
-    navigation.navigate('ReserveDone');
   }
 
   return (
