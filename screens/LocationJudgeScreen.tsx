@@ -36,7 +36,7 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
+        setErrorMsg('位置情報へのアクセス権が拒否されました');
         return;
       }
     })();
