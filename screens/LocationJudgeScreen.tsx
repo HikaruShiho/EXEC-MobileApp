@@ -1,45 +1,68 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, TextInput, KeyboardAvoidingView, ScrollView, Alert } from 'react-native';
 import Button from '../components/Button';
 import axios from 'axios';
+import * as Location from 'expo-location';
 
 import { useSetRecoilState } from 'recoil';
 import { currentGymAtom } from '../recoil/Atom';
 
+
 type GymData = {
   id: number;
   name: string;
-  post_code: string;
-  prefecture_id: number;
-  city: string;
-  block: string;
-  building: string;
   lat: number;
   long: number;
-  created_at: string;
-  updated_at: string;
-  prefecture: {
-    id: number;
-    name: string;
-  };
+}
+
+type currentLocationData = {
+  latitude: number;
+  longitude: number;
 }
 
 const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
+  const setCurrentGymAtom = useSetRecoilState(currentGymAtom);
   const [searchWord, setSearchWord] = useState<string>("");
   const [gyms, setGyms] = useState<GymData[]>([]);
-  const setCurrentGymAtom = useSetRecoilState(currentGymAtom);
+  const [currentLocation, setCurrentLocation] = useState<currentLocationData>(null);
+  const [errorMsg, setErrorMsg] = useState<string>(null);
 
   /**
-   * 登録している全ジムデータを取得
+   * 位置情報の権限を許可するかポップアップを表示
+   * 現在地の緯度経度を取得しステートに保存
+   * DBに登録しているジムデータを取得
    */
   useEffect(() => {
-    getGymAll();
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+    })();
+    getCurrentLocationAsync();
+    getAllGymAsnc();
   }, []);
 
-  const getGymAll = async () => {
+  /**
+   * 全てのジム情報を取得
+   */
+  const getAllGymAsnc = async () => {
     try {
       const { data } = await axios.get(`http://localhost/api/gym`);
       setGyms(data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  /**
+   * 現在地の緯度経度を取得しステートに保存
+   */
+  const getCurrentLocationAsync = async () => {
+    try {
+      const { coords } = await Location.getCurrentPositionAsync({});
+      setCurrentLocation(coords);
     } catch (error) {
       console.log(error.message);
     }
@@ -50,8 +73,44 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
    * @param i MachineData[]のインデックス番号
    */
   const handleCurrentGym = (i: number): void => {
-    setCurrentGymAtom(gyms[i]);
-    navigation.navigate("Home");
+    getCurrentLocationAsync();
+    const distance = calcDistance(currentLocation.latitude, currentLocation.longitude, gyms[i].lat, gyms[i].long);
+    if (distance <= 300) {
+      Alert.alert(
+        gyms[i].name,
+        'ご利用ありがとうございます。\nトレーニング頑張りましょう！！',
+        [{
+          text: '確認',
+          onPress: () => {
+            setCurrentGymAtom(gyms[i]);
+            navigation.navigate("Home");
+          }
+        }]
+      );
+    } else {
+      Alert.alert(
+        '入店エラー',
+        '選択した店舗との距離が離れ過ぎています。再度、店舗を選択してください。',
+        [{ text: '確認' }]
+      );
+    }
+  }
+
+  /**
+   * 現在地とジムの距離を算出
+   * @param  myLat   現在地の緯度
+   * @param  myLong  現在地の経度
+   * @param  gymLat  選択した店舗の緯度
+   * @param  gymLong 選択した店舗の経度
+   * @return number 距離（m）
+   */
+  const calcDistance = (myLat: number, myLong: number, gymLat: number, gymLong: number): number => {
+    const R = Math.PI / 180;
+    myLat *= R;
+    myLong *= R;
+    gymLat *= R;
+    gymLong *= R;
+    return (6371 * Math.acos(Math.cos(myLat) * Math.cos(gymLat) * Math.cos(gymLong - myLong) + Math.sin(myLat) * Math.sin(gymLat))) * 1000;
   }
 
   return (
@@ -87,10 +146,14 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
+    height: "100%",
     flex: 1,
     justifyContent: "center",
     backgroundColor: '#BFF205',
     padding: 40,
+    position: "absolute",
+    zIndex: 2
   },
   titleText: {
     textAlign: "center",

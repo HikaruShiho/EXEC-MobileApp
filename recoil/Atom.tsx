@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 export const isLoginAtom = atom({
     key: 'isLoginAtom',
-    default: null,
+    default: "null",
 });
 
 export const currentGymAtom = atom({
