@@ -20,9 +20,10 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
   const [reservedInfo, setReservedInfoAtom] = useRecoilState(reservedInfoAtom);
   const [machines, setMachines] = useState<MachineData[]>([]);
 
+  console.log(currentGym);
+  
 
   useEffect(() => {
-    console.log("ssssss");
     getMachineAllAsync();
     getReservedAsync();
   }, []);

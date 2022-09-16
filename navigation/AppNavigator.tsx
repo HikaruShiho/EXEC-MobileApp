@@ -16,17 +16,9 @@ import LocationJudgeScreen from "../screens/LocationJudgeScreen";
 import ReserveCancelScreen from "../screens/reservation/ReserveCancelScreen";
 import TimeLimitScreen from "../screens/reservation/TimeLimitScreen";
 
-import { useRecoilValue } from 'recoil';
-import { currentGymAtom, isLoginAtom } from '../recoil/Atom';
-
 const Stack = createNativeStackNavigator();
 
 const AppNavigator: React.FC = () => {
-    const loginState = useRecoilValue(isLoginAtom);
-    const currentGym = useRecoilValue(currentGymAtom);
-
-    console.log(`ログインユーザー：${loginState}`);
-    console.log(`入店中ジム：${currentGym}`);
 
     return (
         <NavigationContainer>
