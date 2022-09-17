@@ -3,12 +3,12 @@ import { StyleSheet, View, Text, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
+import Loading from '../../components/Loading';
 import axios from 'axios';
 import * as Location from 'expo-location';
 
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentGymAtom, reservedInfoAtom } from '../../recoil/Atom';
-import ReservedStack from '../../navigation/stack/ReservedStack';
 
 /**
  * @param route.params - machineId, name, image_path
@@ -17,6 +17,7 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
   const currentGym = useRecoilValue(currentGymAtom);
   const reservedInfo = useRecoilValue(reservedInfoAtom);
   const setReservedInfo = useSetRecoilState(reservedInfoAtom);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   /**
    * reservationテーブルにデータを追加
@@ -33,12 +34,14 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
     } catch (error) {
       console.log(error.message);
     }
+    setIsLoading(false);
   }
 
   /**
    * 現在地の緯度経度を取得し、距離によって処理を実行
    */
   const getCurrentLocationAsync = async () => {
+    setIsLoading(true);
     try {
       const { coords } = await Location.getCurrentPositionAsync({});
       const distance = calcDistance(coords.latitude, coords.longitude, currentGym.lat, currentGym.long);
@@ -50,14 +53,20 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
           '選択した店舗との距離が離れ過ぎています。\n再度、店舗を選択してください。',
           [{
             text: '確認',
-            onPress: () => navigation.navigate("LocationJudge")
+            onPress: () => {
+              setIsLoading(false);
+              navigation.navigate("LocationJudge");
+            }
           }]
         );
       } else {
         Alert.alert(
           '予約できません',
           '現在、予約しているマシンがあります。\n新しく予約を取得する場合は、既存の予約をキャンセルしてください。',
-          [{ text: '閉じる' }]
+          [{
+            text: '閉じる',
+            onPress: () => setIsLoading(false)
+          }]
         );
       }
     } catch (error) {
@@ -109,6 +118,7 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
           color={"#010440"}
         />
       </View>
+      {isLoading && <Loading />}
     </View >
   );
 }

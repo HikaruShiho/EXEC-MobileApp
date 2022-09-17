@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, KeyboardAvoidingView, ScrollView, Al
 import Button from '../components/Button';
 import axios from 'axios';
 import * as Location from 'expo-location';
+import Loading from '../components/Loading';
 
 import { useSetRecoilState } from 'recoil';
 import { currentGymAtom } from '../recoil/Atom';
@@ -26,6 +27,7 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
   const [gyms, setGyms] = useState<GymData[]>([]);
   const [currentLocation, setCurrentLocation] = useState<currentLocationData>(null);
   const [errorMsg, setErrorMsg] = useState<string>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   /**
    * 位置情報の権限を許可するかポップアップを表示
@@ -40,8 +42,8 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
         return;
       }
     })();
-    getCurrentLocationAsync();
     getAllGymAsnc();
+    getCurrentLocationAsync();
   }, []);
 
   /**
@@ -66,6 +68,7 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
     } catch (error) {
       console.log(error.message);
     }
+    setIsLoading(false);
   }
 
   /**
@@ -73,7 +76,6 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
    * @param i MachineData[]のインデックス番号
    */
   const handleCurrentGym = (i: number): void => {
-    // getCurrentLocationAsync();
     const distance = calcDistance(currentLocation.latitude, currentLocation.longitude, gyms[i].lat, gyms[i].long);
     if (distance <= 300) {
       Alert.alert(
@@ -115,8 +117,8 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
-      behavior="padding"
+    style={styles.container}
+    behavior="padding"
     >
       <Text style={styles.titleText}>入店している施設を検索後{"\n"}選択してください。</Text>
       <TextInput
@@ -140,6 +142,7 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
           </View>
         ))}
       </ScrollView>
+      {isLoading && <Loading />}
     </KeyboardAvoidingView>
   );
 }
