@@ -23,7 +23,7 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
    */
   const reservationAsync = async () => {
     try {
-      const { data } = await axios.post('http://localhost/api/reservation', {
+      const { data } = await axios.post('https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation', {
         user_id: 1,
         gym_id: currentGym.id,
         machine_id: route.params.machineId,

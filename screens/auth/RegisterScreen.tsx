@@ -36,7 +36,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
    */
   const saveUidApi = async (uid: string) => {
     try {
-      return await axios.post('http://localhost/api/user', { uid: uid });
+      return await axios.post('https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/user', { uid: uid });
     } catch (error) {
       console.log(error.message);
     }

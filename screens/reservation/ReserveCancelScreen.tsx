@@ -40,7 +40,7 @@ const ReserveCancelScreen: React.FC = ({ navigation }: any) => {
    */
   const handleReservationCancel = async () => {
     try {
-      await axios.put(`http://localhost/api/reservation/cancel/${reservedInfo.id}`);
+      await axios.put(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation/cancel/${reservedInfo.id}`);
       setReservedInfoAtom(null);
     } catch (error) {
       console.log(error.message);

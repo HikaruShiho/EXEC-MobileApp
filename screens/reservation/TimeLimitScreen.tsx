@@ -16,7 +16,7 @@ const TimeLimitScreen: React.FC = ({ navigation }: any) => {
    */
   const handleCheckOut = async () => {
     try {
-      await axios.put(`http://localhost/api/reservation/checkout/${reservedInfo.id}`);
+      await axios.put(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation/checkout/${reservedInfo.id}`);
       setReservedInfo(null);
     } catch (error) {
       console.log(error.message);
@@ -45,7 +45,7 @@ const TimeLimitScreen: React.FC = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <Timer handleCheckOut={handleCheckOut}/>
+      <Timer handleCheckOut={handleCheckOut} />
       <View style={styles.checkOutButton}>
         <Button
           onPress={handleCheckOut}

@@ -21,7 +21,7 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
   const [machines, setMachines] = useState<MachineData[]>([]);
 
   console.log(currentGym);
-  
+
 
   useEffect(() => {
     getMachineAllAsync();
@@ -33,7 +33,7 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
    */
   const getMachineAllAsync = async () => {
     try {
-      const { data } = await axios.get(`http://localhost/api/gym/${currentGym.id}`);
+      const { data } = await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/gym/${currentGym.id}`);
       setMachines(data.machines);
     } catch (error) {
       console.log(error.response.data);
@@ -45,7 +45,7 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
    */
   const getReservedAsync = async () => {
     try {
-      const { data } = await axios.get(`http://localhost/api/reservation/${1}/${currentGym.id}`);
+      const { data } = await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation/${1}/${currentGym.id}`);
       setReservedInfoAtom(data ? data : null);
     } catch (error) {
       console.log(error.message);

@@ -49,7 +49,7 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
    */
   const getAllGymAsnc = async () => {
     try {
-      const { data } = await axios.get(`http://localhost/api/gym`);
+      const { data } = await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/gym`);
       setGyms(data);
     } catch (error) {
       console.log(error.message);
@@ -73,7 +73,7 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
    * @param i MachineData[]のインデックス番号
    */
   const handleCurrentGym = (i: number): void => {
-    getCurrentLocationAsync();
+    // getCurrentLocationAsync();
     const distance = calcDistance(currentLocation.latitude, currentLocation.longitude, gyms[i].lat, gyms[i].long);
     if (distance <= 300) {
       Alert.alert(

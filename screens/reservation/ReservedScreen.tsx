@@ -19,7 +19,7 @@ const ReservedScreen: React.FC = ({ navigation }: any) => {
    */
   const handleCheckIn = async () => {
     try {
-      await axios.put(`http://localhost/api/reservation/checkin/${reservedInfo.id}`);
+      await axios.put(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation/checkin/${reservedInfo.id}`);
       navigation.navigate('TimeLimit')
     } catch (error) {
       console.log(error.message);
