@@ -33,7 +33,7 @@ const LogInScreen: React.FC = ({ navigation }: any) => {
    */
   const checkUidAsync = async (uid: string) => {
     try {
-      const { data } = await axios.get(`http://localhost/api/user/${uid}`);
+      const { data } = await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/user/${uid}`);
       if (data.uid === uid) {
         navigation.navigate("LocationJudge");
       }

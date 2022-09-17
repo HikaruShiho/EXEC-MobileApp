@@ -23,7 +23,7 @@ const ReservationStatus: React.FC<Props> = ({ machineId, name, image_path }) => 
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.get(`http://localhost/api/reservation/status/${currentGym.id}/${machineId}`);
+        const { data } = await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation/status/${currentGym.id}/${machineId}`);
         setWaitingPeople(data);
       } catch (error) {
         console.log(error.message);
