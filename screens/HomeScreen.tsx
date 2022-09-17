@@ -7,6 +7,7 @@ import * as Notifications from 'expo-notifications';
 
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { isLoginAtom, currentGymAtom, reservedInfoAtom } from '../recoil/Atom';
+import Loading from '../components/Loading';
 
 type MachineData = {
   id: number;
@@ -19,9 +20,6 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
   const currentGym = useRecoilValue(currentGymAtom);
   const [reservedInfo, setReservedInfoAtom] = useRecoilState(reservedInfoAtom);
   const [machines, setMachines] = useState<MachineData[]>([]);
-
-  console.log(currentGym);
-
 
   useEffect(() => {
     getMachineAllAsync();
