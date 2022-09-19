@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Text } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, View, ScrollView, Text, Button } from 'react-native';
 import MachineCard from '../components/reservation/MachineCard';
 import ReservedMachine from '../components/reservation/ReservedMachine';
 import axios from 'axios';
@@ -7,7 +7,7 @@ import * as Notifications from 'expo-notifications';
 
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { isLoginAtom, currentGymAtom, reservedInfoAtom } from '../recoil/Atom';
-import Loading from '../components/Loading';
+
 
 type MachineData = {
   id: number;
@@ -25,6 +25,11 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
     getMachineAllAsync();
     getReservedAsync();
   }, []);
+
+  Notifications.addNotificationResponseReceivedListener((response) => {
+    navigation.navigate("ReservedStack");
+    console.log(response);
+  });
 
   /**
    * 入店しているジムのマシンを取得
@@ -50,17 +55,38 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
     }
   }
 
+  const sendPushNotification = async () => {
+    const message = {
+      to: "ExponentPushToken[opXBVGPuAeVjm5O07purhw]",
+      title: "おはようさん",
+      subtitle: "あああああああああああああ",
+      body: "通知ですよ",
+      sound: 'default'
+    };
+    try {
+      await fetch(`https://exp.host/--/api/v2/push/send`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-encoding': 'gzip, deflate',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <ScrollView style={styles.container}>
-      {/* <Button
-        title='3秒後にプッシュ通知する'
-        onPress={scheduleNotificationAsync}
-      /> */}
+      <Button title="押してみ" onPress={sendPushNotification} />
+      <Button title="バッジ消す" onPress={sendPushNotification} />
       {reservedInfo &&
         <ReservedMachine onPress={() => navigation.navigate('ReservedStack')} />
       }
       <View style={styles.listMachineWrap}>
-        {machines.map((machine) => (
+        {machines?.map((machine) => (
           <MachineCard
             onPress={() => navigation.navigate('ReserveCheck', {
               machineId: machine.id,
@@ -86,36 +112,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
-
-
-
-  // useEffect(() => {
-  //   const status = Notifications.getPermissionsAsync();
-
-  //   console.log(requestPermissionsAsync());
-  // });
-
-/**
- * 通知の権限を許可するホップアップを表示
- * @return {void}
- * @constant {settings} boolean
- */
-  // const requestPermissionsAsync = async () => {
-  //   const settings = await Notifications.getPermissionsAsync();
-  //   console.log(settings.granted, settings.ios?.status, Notifications.IosAuthorizationStatus.PROVISIONAL);
-  //   return (
-  //     settings.granted || settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL
-  //   );
-  // }
-
-  // const scheduleNotificationAsync = async () => {
-  //   await Notifications.scheduleNotificationAsync({
-  //     content: {
-  //       body: 'test'
-  //     },
-  //     trigger: {
-  //       seconds: 3,
-  //     }
-  //   })
-  // }

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Alert } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
 import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
 import Loading from '../../components/Loading';
+import Cautions from '../../components/Cations';
 import axios from 'axios';
 import * as Location from 'expo-location';
 
@@ -50,7 +50,7 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
       } else if (distance >= 300) {
         Alert.alert(
           '入店エラー',
-          '選択した店舗との距離が離れ過ぎています。\n再度、店舗を選択してください。',
+          '再度、店舗を選択してください。',
           [{
             text: '確認',
             onPress: () => {
@@ -62,10 +62,13 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
       } else {
         Alert.alert(
           '予約できません',
-          '現在、予約しているマシンがあります。\n新しく予約を取得する場合は、既存の予約をキャンセルしてください。',
+          '現在、予約しているマシンがあります。\n新しく予約を取得する場合は、\n既存の予約をキャンセルしてください。',
           [{
             text: '閉じる',
-            onPress: () => setIsLoading(false)
+            onPress: () => {
+              setIsLoading(false);
+              navigation.navigate("Home");
+            }
           }]
         );
       }
@@ -98,18 +101,7 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
         name={route.params.name}
         image_path={route.params.image_path}
       />
-      <View style={styles.cationWrap}>
-        <View style={styles.cationHead}>
-          <FontAwesome name="exclamation-circle" size={22} color="#fff" />
-          <Text style={styles.cationTitle}>注意事項</Text>
-        </View>
-        <View style={styles.cationBody}>
-          <Text style={styles.cationText}>・ここに入ります</Text>
-          <Text style={styles.cationText}>・ここに入ります</Text>
-          <Text style={styles.cationText}>・ここに入ります</Text>
-          <Text style={styles.cationText}>・ここに入ります</Text>
-        </View>
-      </View>
+      <Cautions />
       <View style={{ paddingTop: 24 }}>
         <Button
           onPress={getCurrentLocationAsync}
@@ -128,39 +120,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 12,
-  },
-  cationWrap: {
-    width: "100%",
-    borderWidth: 2,
-    borderColor: "#010440",
-    marginTop: 16,
-  },
-  cationHead: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#010440",
-    paddingTop: 6,
-    paddingBottom: 6,
-    paddingLeft: 12,
-    paddingRight: 12,
-  },
-  cationTitle: {
-    width: "100%",
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-    paddingLeft: 8,
-  },
-  cationBody: {
-    paddingTop: 6,
-    paddingBottom: 6,
-    paddingLeft: 8,
-    paddingRight: 8,
-  },
-  cationText: {
-    paddingTop: 4,
-    paddingBottom: 4,
   },
 });
 

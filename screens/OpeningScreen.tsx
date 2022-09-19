@@ -2,6 +2,15 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Button from '../components/Button';
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 const OpeningScreen: React.FC = ({ navigation }: any) => {
 

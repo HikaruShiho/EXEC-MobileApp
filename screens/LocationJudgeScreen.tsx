@@ -4,6 +4,8 @@ import Button from '../components/Button';
 import axios from 'axios';
 import * as Location from 'expo-location';
 import Loading from '../components/Loading';
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
 
 import { useSetRecoilState } from 'recoil';
 import { currentGymAtom } from '../recoil/Atom';
@@ -21,13 +23,22 @@ type currentLocationData = {
   longitude: number;
 }
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
 const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
   const setCurrentGymAtom = useSetRecoilState(currentGymAtom);
   const [searchWord, setSearchWord] = useState<string>("");
   const [gyms, setGyms] = useState<GymData[]>([]);
   const [currentLocation, setCurrentLocation] = useState<currentLocationData>(null);
   const [errorMsg, setErrorMsg] = useState<string>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [expoPushToken, setExpoPushToken] = useState<string>("");
 
   /**
    * 位置情報の権限を許可するかポップアップを表示
@@ -35,6 +46,7 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
    * DBに登録しているジムデータを取得
    */
   useEffect(() => {
+    setIsLoading(true);
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -44,7 +56,42 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
     })();
     getAllGymAsnc();
     getCurrentLocationAsync();
+    registerForPushNotificationsAsync()
+      .then((token) => token && setExpoPushToken(token))
+      .catch((error) => console.log(error.message));
   }, []);
+
+  /**
+   * プッシュ通知用トークンを取得
+   * @returns token プッシュ通知用トークン
+   */
+  const registerForPushNotificationsAsync = async () => {
+    let token: string;
+    // 実機であるかどうかチェック
+    if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      console.log(status);
+      let finalStatus = existingStatus;
+      // 通知が許可されているかどうかをチェック
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      // 通知が許可されているかどうかをチェック
+      if (finalStatus !== 'granted') {
+        return;
+      }
+      //トークンを取得
+      try {
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      console.log('プッシュ通知は、実機端末を使用してください。');
+    }
+    return token;
+  }
 
   /**
    * 全てのジム情報を取得
@@ -117,8 +164,8 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
 
   return (
     <KeyboardAvoidingView
-    style={styles.container}
-    behavior="padding"
+      style={styles.container}
+      behavior="padding"
     >
       <Text style={styles.titleText}>入店している施設を検索後{"\n"}選択してください。</Text>
       <TextInput
