@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Button, KeyboardAvoidingView } from 'react-native';
 import _Button from '../../components/Button';
 import axios from 'axios';
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import * as Location from 'expo-location';
 
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { auth } from '../../firebase/config';
@@ -12,7 +15,21 @@ import { isLoginAtom } from '../../recoil/Atom';
 const RegisterScreen: React.FC = ({ navigation }: any) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [expoPushToken, setExpoPushToken] = useState<string>("");
   const setIsLoginAtom = useSetRecoilState(isLoginAtom);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('位置情報へのアクセス権が拒否されました');
+        return;
+      }
+    })();
+    registerForPushNotificationsAsync()
+      .then((token) => token && setExpoPushToken(token))
+      .catch((error) => console.log(error.message));
+  }, []);
 
   /**
    * 【Firebase】ユーザー新規登録処理
@@ -20,10 +37,10 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
   const handleRegister = async () => {
     try {
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
-      if (saveUidApi(user.uid)) {
-        setIsLoginAtom(user);
-        navigation.navigate("LocationJudge")
-      }
+      saveUidApi(user.uid).then((response) => {
+        setIsLoginAtom(response.data);
+        navigation.navigate("LocationJudge");
+      }).catch((error) => console.log(error.message));
     } catch (error) {
       console.log(error.message);
     }
@@ -31,15 +48,50 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
 
   /**
    * DBにuidを挿入
-   * @param {string} uid - Firebaseから発行されたID
-   * @return {object}
+   * @param uid - Firebaseから発行されたID
+   * @return promise
    */
   const saveUidApi = async (uid: string) => {
     try {
-      return await axios.post('https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/user', { uid: uid });
+      return await axios.post('https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/user', {
+        uid: uid,
+        push_token: expoPushToken
+      });
     } catch (error) {
       console.log(error.message);
     }
+  }
+
+  /**
+   * プッシュ通知用トークンを取得
+   * @return token プッシュ通知用トークン
+   */
+  const registerForPushNotificationsAsync = async () => {
+    let token: string;
+    // 実機であるかどうかチェック
+    if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      console.log(status);
+      let finalStatus = existingStatus;
+      // 通知が許可されているかどうかをチェック
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      // 通知が許可されているかどうかをチェック
+      if (finalStatus !== 'granted') {
+        return;
+      }
+      //トークンを取得
+      try {
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      console.log('プッシュ通知は、実機端末を使用してください。');
+    }
+    return token;
   }
 
   return (

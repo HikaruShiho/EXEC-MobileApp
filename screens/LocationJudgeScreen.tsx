@@ -5,10 +5,9 @@ import axios from 'axios';
 import * as Location from 'expo-location';
 import Loading from '../components/Loading';
 import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
 
 import { useSetRecoilState } from 'recoil';
-import { currentGymAtom, isLoginAtom } from '../recoil/Atom';
+import { currentGymAtom } from '../recoil/Atom';
 
 
 type GymData = {
@@ -36,11 +35,7 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
   const [searchWord, setSearchWord] = useState<string>("");
   const [gyms, setGyms] = useState<GymData[]>([]);
   const [currentLocation, setCurrentLocation] = useState<currentLocationData>(null);
-  const [errorMsg, setErrorMsg] = useState<string>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [expoPushToken, setExpoPushToken] = useState<string>("");
-
-  const setIsLoginAtom = useSetRecoilState(isLoginAtom);
 
   /**
    * 位置情報の権限を許可するかポップアップを表示
@@ -49,51 +44,10 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
    */
   useEffect(() => {
     setIsLoading(true);
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('位置情報へのアクセス権が拒否されました');
-        return;
-      }
-    })();
     getAllGymAsnc();
     getCurrentLocationAsync();
-    registerForPushNotificationsAsync()
-      .then((token) => token && setExpoPushToken(token))
-      .catch((error) => console.log(error.message));
   }, []);
 
-  /**
-   * プッシュ通知用トークンを取得
-   * @returns token プッシュ通知用トークン
-   */
-  const registerForPushNotificationsAsync = async () => {
-    let token: string;
-    // 実機であるかどうかチェック
-    if (Device.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      console.log(status);
-      let finalStatus = existingStatus;
-      // 通知が許可されているかどうかをチェック
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      // 通知が許可されているかどうかをチェック
-      if (finalStatus !== 'granted') {
-        return;
-      }
-      //トークンを取得
-      try {
-        token = (await Notifications.getExpoPushTokenAsync()).data;
-      } catch (e) {
-        console.log(e);
-      }
-    } else {
-      console.log('プッシュ通知は、実機端末を使用してください。');
-    }
-    return token;
-  }
 
   /**
    * 全てのジム情報を取得
@@ -125,7 +79,6 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
    * @param i MachineData[]のインデックス番号
    */
   const handleCurrentGym = (i: number): void => {
-    setIsLoginAtom("aaa");
     const distance = calcDistance(currentLocation.latitude, currentLocation.longitude, gyms[i].lat, gyms[i].long);
     if (distance <= 300) {
       Alert.alert(
