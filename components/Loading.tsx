@@ -1,15 +1,28 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import LottieView from 'lottie-react-native';
 
-const Loading: React.FC = () => {
+type Props = { pattern: string; }
+
+const Loading: React.FC<Props> = ({ pattern }) => {
     return (
         <View style={styles.container}>
-            <LottieView
-                style={{ width: 140, height: 140 }}
-                source={require('../assets/loader.json')}
-                autoPlay loop
-            />
+            {pattern === "location" ? (
+                <>
+                    <LottieView
+                        style={{ width: 160, height: 160 }}
+                        source={require('../assets/location_loader.json')}
+                        autoPlay loop
+                    />
+                    <Text style={{ fontSize: 20 }}>現在地取得中</Text>
+                </>
+            ) : (
+                <LottieView
+                    style={{ width: 140, height: 140 }}
+                    source={require('../assets/loader.json')}
+                    autoPlay loop
+                />
+            )}
         </View>
     )
 }
