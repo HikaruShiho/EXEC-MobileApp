@@ -90,8 +90,6 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        {/* <Button title="押してみ" onPress={sendPushNotification} />
-      <Button title="バッジ消す" onPress={sendPushNotification} /> */}
         {reservedInfo &&
           <ReservedMachine onPress={() => navigation.navigate('ReservedStack')} />
         }
@@ -109,7 +107,7 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
           ))}
         </View>
       </ScrollView>
-      {isLoading && <Loading />}
+      {isLoading && <Loading pattern={"default"} />}
     </View>
   );
 }

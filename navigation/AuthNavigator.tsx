@@ -11,7 +11,7 @@ const AuthNavigator: React.FC = () => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={"Opening"}
+      initialRouteName={"LocationJudge"}
     >
       <Stack.Screen
         name="Opening"

@@ -144,7 +144,7 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
           </View>
         ))}
       </ScrollView>
-      {isLoading && <Loading />}
+      {isLoading && <Loading pattern={"location"} />}
     </KeyboardAvoidingView>
   );
 }
