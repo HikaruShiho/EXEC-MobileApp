@@ -22,7 +22,7 @@ const ReserveCancelScreen: React.FC = ({ navigation }: any) => {
     const resetAction = CommonActions.reset({
       index: 1,
       routes: [
-        { name: 'Home' }
+        { name: 'HomeStack' }
       ]
     });
     Alert.alert(

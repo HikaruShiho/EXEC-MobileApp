@@ -8,7 +8,7 @@ import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 
 import { useSetRecoilState } from 'recoil';
-import { currentGymAtom } from '../recoil/Atom';
+import { currentGymAtom, isLoginAtom } from '../recoil/Atom';
 
 
 type GymData = {
@@ -39,6 +39,8 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
   const [errorMsg, setErrorMsg] = useState<string>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [expoPushToken, setExpoPushToken] = useState<string>("");
+
+  const setIsLoginAtom = useSetRecoilState(isLoginAtom);
 
   /**
    * 位置情報の権限を許可するかポップアップを表示
@@ -123,16 +125,16 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
    * @param i MachineData[]のインデックス番号
    */
   const handleCurrentGym = (i: number): void => {
+    setIsLoginAtom("aaa");
     const distance = calcDistance(currentLocation.latitude, currentLocation.longitude, gyms[i].lat, gyms[i].long);
     if (distance <= 300) {
       Alert.alert(
         gyms[i].name,
-        'ご利用ありがとうございます。\nトレーニング頑張りましょう！！',
+        'トレーニング頑張りましょう！！',
         [{
           text: '確認',
           onPress: () => {
             setCurrentGymAtom(gyms[i]);
-            navigation.navigate("Home");
           }
         }]
       );

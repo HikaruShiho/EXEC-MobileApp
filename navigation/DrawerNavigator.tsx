@@ -28,16 +28,12 @@ const DrawerNavigator: React.FC = () => {
                         <Entypo name="menu" size={40} color="#fff" />
                     </TouchableOpacity>
                 ),
-                drawerStyle: {
-                    width: 240,
-                },
-                drawerLabelStyle: {
-                    fontSize: 18
-                }
+                drawerStyle: { width: 240 },
+                drawerLabelStyle: { fontSize: 18 }
             })}
         >
             <Drawer.Screen
-                name="Home"
+                name="ホーム"
                 component={BottomTabNavigator}
                 options={{
                     headerTitle: () => currentGym && <Text style={styles.text}>{currentGym.name}</Text>,

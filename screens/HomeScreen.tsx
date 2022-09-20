@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, ScrollView, Text, Button } from 'react-native';
 import MachineCard from '../components/reservation/MachineCard';
 import ReservedMachine from '../components/reservation/ReservedMachine';
+import Loading from '../components/Loading';
 import axios from 'axios';
 import * as Notifications from 'expo-notifications';
 
@@ -21,11 +22,19 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
   const [reservedInfo, setReservedInfoAtom] = useRecoilState(reservedInfoAtom);
   const [machines, setMachines] = useState<MachineData[]>([]);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+
   useEffect(() => {
+    setIsLoading(true);
     getMachineAllAsync();
     getReservedAsync();
+    setTimeout(() => setIsLoading(false), 2000)
   }, []);
 
+  /**
+   * 通知をタップしたときの処理
+   */
   Notifications.addNotificationResponseReceivedListener((response) => {
     navigation.navigate("ReservedStack");
     console.log(response);
@@ -79,31 +88,35 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <Button title="押してみ" onPress={sendPushNotification} />
-      <Button title="バッジ消す" onPress={sendPushNotification} />
-      {reservedInfo &&
-        <ReservedMachine onPress={() => navigation.navigate('ReservedStack')} />
-      }
-      <View style={styles.listMachineWrap}>
-        {machines?.map((machine) => (
-          <MachineCard
-            onPress={() => navigation.navigate('ReserveCheck', {
-              machineId: machine.id,
-              name: machine.name,
-              image_path: machine.image_path,
-            })}
-            key={machine.id}
-            machine={machine}
-          />
-        ))}
-      </View>
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView>
+        {/* <Button title="押してみ" onPress={sendPushNotification} />
+      <Button title="バッジ消す" onPress={sendPushNotification} /> */}
+        {reservedInfo &&
+          <ReservedMachine onPress={() => navigation.navigate('ReservedStack')} />
+        }
+        <View style={styles.listMachineWrap}>
+          {machines?.map((machine) => (
+            <MachineCard
+              onPress={() => navigation.navigate('ReserveCheck', {
+                machineId: machine.id,
+                name: machine.name,
+                image_path: machine.image_path,
+              })}
+              key={machine.id}
+              machine={machine}
+            />
+          ))}
+        </View>
+      </ScrollView>
+      {isLoading && <Loading />}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: '#fff',
   },
   listMachineWrap: {

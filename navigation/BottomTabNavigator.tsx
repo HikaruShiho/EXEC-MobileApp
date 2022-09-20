@@ -5,23 +5,9 @@ import HomeStack from "./stack/HomeStack";
 import ReservedStack from "./stack/ReservedStack";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator: React.FC = ({navigation, route}: any) => {
-
-    // React.useLayoutEffect(() => {
-    //     const routeName = getFocusedRouteNameFromRoute(route);
-    //     console.log(routeName);
-        
-    //     if (routeName === "ReservedStack"){
-    //         navigation.setOptions({display: 'none'});
-    //     }else {
-    //         navigation.setOptions({display: 'flex'});
-    //     }
-    // }, [navigation, route]);
-
+const BottomTabNavigator: React.FC = () => {
     return (
         <Tab.Navigator screenOptions={() => ({
             headerShown: false,
@@ -31,7 +17,6 @@ const BottomTabNavigator: React.FC = ({navigation, route}: any) => {
                 name="HomeStack"
                 component={HomeStack}
                 options={({ route }) => ({
-                    // tabBarStyle: { display: 'none' },
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome
                             name="home"
