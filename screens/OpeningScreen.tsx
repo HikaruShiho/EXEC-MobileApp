@@ -13,7 +13,6 @@ Notifications.setNotificationHandler({
 });
 
 const OpeningScreen: React.FC = ({ navigation }: any) => {
-
   return (
     <View style={styles.container}>
       <MaterialCommunityIcons

@@ -20,8 +20,13 @@ const LogInScreen: React.FC = ({ navigation }: any) => {
   const handleLogin = async () => {
     try {
       const { user } = await signInWithEmailAndPassword(auth, email, password);
-      setIsLoginAtom(user);
-      checkUidAsync(user.uid);
+      getLoginUserAsync(user.uid).then((data) => {
+        if (data.uid === user.uid) {
+          console.log(data);
+          setIsLoginAtom(data);
+          navigation.navigate("LocationJudge");
+        }
+      }).catch((error) => console.log(error.message));
     } catch (error) {
       console.log(error.message);
     }
@@ -29,14 +34,13 @@ const LogInScreen: React.FC = ({ navigation }: any) => {
 
   /**
    * 本人確認処理 - FirebaseのuidとDBのuidが同一であればホーム画面に遷移
-   * @param {string} uid - Firebaseから取得したuid
+   * @param  uid Firebaseから取得したuid
+   * @return promise
    */
-  const checkUidAsync = async (uid: string) => {
+  const getLoginUserAsync = async (uid: string) => {
     try {
       const { data } = await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/user/${uid}`);
-      if (data.uid === uid) {
-        navigation.navigate("LocationJudge");
-      }
+      return data;
     } catch (error) {
       console.log(error.message);
     }
