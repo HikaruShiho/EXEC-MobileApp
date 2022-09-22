@@ -22,7 +22,6 @@ const LogInScreen: React.FC = ({ navigation }: any) => {
       const { user } = await signInWithEmailAndPassword(auth, email, password);
       getLoginUserAsync(user.uid).then((data) => {
         if (data.uid === user.uid) {
-          console.log(data);
           setIsLoginAtom(data);
           navigation.navigate("LocationJudge");
         }

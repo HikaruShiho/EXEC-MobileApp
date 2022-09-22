@@ -30,7 +30,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
+const LocationJudgeScreen: React.FC = () => {
   const setCurrentGymAtom = useSetRecoilState(currentGymAtom);
   const [searchWord, setSearchWord] = useState<string>("");
   const [gyms, setGyms] = useState<GymData[]>([]);
@@ -68,10 +68,10 @@ const LocationJudgeScreen: React.FC = ({ navigation }: any) => {
     try {
       const { coords } = await Location.getCurrentPositionAsync({});
       setCurrentLocation(coords);
+      setIsLoading(false);
     } catch (error) {
       console.log(error.message);
     }
-    setIsLoading(false);
   }
 
   /**

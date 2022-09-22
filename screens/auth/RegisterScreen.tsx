@@ -20,6 +20,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
 
   useEffect(() => {
     (async () => {
+      await Notifications.requestPermissionsAsync();
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.log('位置情報へのアクセス権が拒否されました');
