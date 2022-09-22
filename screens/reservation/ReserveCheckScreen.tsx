@@ -8,7 +8,7 @@ import axios from 'axios';
 import * as Location from 'expo-location';
 
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { currentGymAtom, reservedInfoAtom } from '../../recoil/Atom';
+import { currentGymAtom, isLoginAtom, reservedInfoAtom } from '../../recoil/Atom';
 
 /**
  * @param route.params - machineId, name, image_path
@@ -16,6 +16,7 @@ import { currentGymAtom, reservedInfoAtom } from '../../recoil/Atom';
 const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
   const currentGym = useRecoilValue(currentGymAtom);
   const reservedInfo = useRecoilValue(reservedInfoAtom);
+  const isLogin = useRecoilValue(isLoginAtom);
   const setReservedInfo = useSetRecoilState(reservedInfoAtom);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -25,7 +26,7 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
   const reservationAsync = async () => {
     try {
       const { data } = await axios.post('https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation', {
-        user_id: 1,
+        user_id: isLogin.id,
         gym_id: currentGym.id,
         machine_id: route.params.machineId,
       });

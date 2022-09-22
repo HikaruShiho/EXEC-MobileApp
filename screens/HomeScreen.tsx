@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, ScrollView, Text, Button } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, ScrollView, Button } from 'react-native';
 import MachineCard from '../components/reservation/MachineCard';
 import ReservedMachine from '../components/reservation/ReservedMachine';
 import Loading from '../components/Loading';
@@ -21,9 +21,11 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
   const currentGym = useRecoilValue(currentGymAtom);
   const [reservedInfo, setReservedInfoAtom] = useRecoilState(reservedInfoAtom);
   const [machines, setMachines] = useState<MachineData[]>([]);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  console.log(loginState);
+  console.log(currentGym);
+  console.log(reservedInfo);
 
   useEffect(() => {
     setIsLoading(true);
@@ -37,7 +39,6 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
    */
   Notifications.addNotificationResponseReceivedListener((response) => {
     navigation.navigate("ReservedStack");
-    console.log(response);
   });
 
   /**
@@ -61,29 +62,6 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
       setReservedInfoAtom(data ? data : null);
     } catch (error) {
       console.log(error.message);
-    }
-  }
-
-  const sendPushNotification = async () => {
-    const message = {
-      to: "ExponentPushToken[opXBVGPuAeVjm5O07purhw]",
-      title: "おはようさん",
-      subtitle: "あああああああああああああ",
-      body: "通知ですよ",
-      sound: 'default'
-    };
-    try {
-      await fetch(`https://exp.host/--/api/v2/push/send`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Accept-encoding': 'gzip, deflate',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      });
-    } catch (error) {
-      console.log(error);
     }
   }
 

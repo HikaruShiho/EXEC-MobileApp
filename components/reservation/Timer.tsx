@@ -12,8 +12,8 @@ const Timer: React.FC<Props> = ({ handleCheckOut }) => {
 
   /**
    * 秒数を "mm:ss" にフォーマット
-   * @param remainingTime
-   * @returns {string} mm:ss
+   * @param  remainingTime
+   * @return mm:ss
    */
   const formatSeconds = (remainingTime: number): string => {
     const minutes = Math.floor(remainingTime / 60)
@@ -35,9 +35,9 @@ const Timer: React.FC<Props> = ({ handleCheckOut }) => {
       <View style={styles.timerWrap}>
         <CountdownCircleTimer
           isPlaying={isPlaying}
-          duration={10}
+          duration={1200}
           colors={["#010440", "#F7B801", "#A30000", "#A30000"]}
-          colorsTime={[240, 160, 80, 0]}
+          colorsTime={[1200, 800, 400, 0]}
           size={280}
           strokeWidth={14}
           strokeLinecap={"square"}
