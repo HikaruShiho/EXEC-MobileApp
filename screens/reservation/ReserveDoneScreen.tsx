@@ -41,6 +41,9 @@ const ReserveDoneScreen: React.FC = ({ navigation }: any) => {
     }
   }
 
+  /**
+   * プッシュ通知送信
+   */
   const sendPushNotification = async () => {
     const message = {
       to: loginState.push_token,

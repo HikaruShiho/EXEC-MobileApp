@@ -24,9 +24,9 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
   const [machines, setMachines] = useState<MachineData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  console.log(loginState);
-  console.log(currentGym);
-  console.log(reservedInfo);
+  console.log("ログインユーザー：", loginState);
+  console.log("入店ジム：", currentGym);
+  console.log("予約中マシン情報", reservedInfo);
 
   useEffect(() => {
     setIsLoading(true);
