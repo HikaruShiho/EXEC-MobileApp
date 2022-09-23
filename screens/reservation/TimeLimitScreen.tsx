@@ -18,10 +18,10 @@ const TimeLimitScreen: React.FC = ({ navigation }: any) => {
   const handleCheckOut = async () => {
     try {
       await axios.put(`${EXEC_API_URL}/reservation/checkout/${reservedInfo.id}`);
-      setReservedInfo(null);
     } catch (error) {
       console.log(error.message);
     }
+    sendPushNotification();
     confirmCheckOut();
   }
 
@@ -40,8 +40,39 @@ const TimeLimitScreen: React.FC = ({ navigation }: any) => {
       'ご利用ありがとうございました',
       [{
         text: 'OK',
-        onPress: navigation.dispatch(resetAction)
+        onPress: () => {
+          setReservedInfo(null);
+          navigation.dispatch(resetAction);
+        }
       }]);
+  }
+
+
+  /**
+   * 次の予約者にプッシュ通知送信
+   */
+  const sendPushNotification = async () => {
+    const { data } = await axios.get(`${EXEC_API_URL}/reservation/next_reservation_exists/${reservedInfo.id}/${reservedInfo.gym_id}/${reservedInfo.machine_id}`);
+    const message = {
+      to: data.user.push_token,
+      title: "マシン利用開始",
+      subtitle: "5分以内にチェックインしてください",
+      body: "",
+      sound: 'default'
+    };
+    try {
+      await fetch(`https://exp.host/--/api/v2/push/send`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-encoding': 'gzip, deflate',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
