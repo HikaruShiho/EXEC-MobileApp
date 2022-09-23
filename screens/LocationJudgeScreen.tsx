@@ -43,7 +43,7 @@ const LocationJudgeScreen: React.FC = () => {
    * DBに登録しているジムデータを取得
    */
   useEffect(() => {
-    setIsLoading(true);
+    // setIsLoading(true);
     getAllGymAsnc();
     getCurrentLocationAsync();
   }, []);
@@ -122,19 +122,26 @@ const LocationJudgeScreen: React.FC = () => {
       style={styles.container}
       behavior="padding"
     >
-      <Text style={styles.titleText}>入店している施設を検索後{"\n"}選択してください。</Text>
+      <Text style={styles.titleText}>入店している施設を{"\n"}選択してください。</Text>
       <TextInput
         style={styles.input}
         textAlign={"left"}
         selectionColor={"#00f"}
         placeholder={"店舗名を検索（例：池袋店）"}
         autoCapitalize="none"
-        onChangeText={setSearchWord}
+        onChangeText={(e) => setSearchWord(e)}
         value={searchWord}
       />
       <ScrollView style={{ paddingTop: 20 }}>
         {gyms.map((gym, i) => (
-          <View style={{ paddingTop: 16 }} key={i}>
+          <View style={{
+            paddingTop: 16,
+            display:
+              gym.name.indexOf(searchWord.toLowerCase()) !== -1 &&
+                gym.name.indexOf(searchWord.toUpperCase()) !== -1 &&
+                searchWord !== "" ? "flex" : "none"
+          }}
+            key={gym.id}>
             <Button
               onPress={() => handleCurrentGym(i)}
               title={gym.name}
