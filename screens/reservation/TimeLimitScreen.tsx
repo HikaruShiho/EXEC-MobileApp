@@ -3,6 +3,7 @@ import { StyleSheet, View, Alert } from 'react-native';
 import Button from '../../components/Button';
 import Timer from '../../components/reservation/Timer';
 import axios from 'axios';
+import { ACCENT_COLOR, EXEC_API_URL } from 'react-native-dotenv';
 
 import { useRecoilState } from 'recoil';
 import { reservedInfoAtom } from '../../recoil/Atom';
@@ -16,7 +17,7 @@ const TimeLimitScreen: React.FC = ({ navigation }: any) => {
    */
   const handleCheckOut = async () => {
     try {
-      await axios.put(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation/checkout/${reservedInfo.id}`);
+      await axios.put(`${EXEC_API_URL}/reservation/checkout/${reservedInfo.id}`);
       setReservedInfo(null);
     } catch (error) {
       console.log(error.message);
@@ -50,7 +51,7 @@ const TimeLimitScreen: React.FC = ({ navigation }: any) => {
         <Button
           onPress={handleCheckOut}
           title={"チェックアウト"}
-          bgColor={"#BFF205"}
+          bgColor={ACCENT_COLOR}
           color={"#010440"}
         />
       </View>

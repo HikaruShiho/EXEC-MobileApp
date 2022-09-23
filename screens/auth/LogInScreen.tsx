@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Button, KeyboardAvoidingView } from 'react-native';
 import _Button from '../../components/Button';
 import axios from 'axios';
+import { THEME_COLOR, ACCENT_COLOR, EXEC_API_URL } from 'react-native-dotenv';
 
 import { signInWithEmailAndPassword } from '@firebase/auth';
 import { auth } from '../../firebase/config';
@@ -38,7 +39,7 @@ const LogInScreen: React.FC = ({ navigation }: any) => {
    */
   const getLoginUserAsync = async (uid: string) => {
     try {
-      const { data } = await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/user/${uid}`);
+      const { data } = await axios.get(`${EXEC_API_URL}/user/${uid}`);
       return data;
     } catch (error) {
       console.log(error.message);
@@ -74,7 +75,7 @@ const LogInScreen: React.FC = ({ navigation }: any) => {
         <_Button
           onPress={handleLogin}
           title={"ログイン"}
-          bgColor={"#010440"}
+          bgColor={THEME_COLOR}
           color={"#fff"}
         />
       </View>
@@ -82,7 +83,7 @@ const LogInScreen: React.FC = ({ navigation }: any) => {
         <Button
           onPress={() => navigation.navigate("Register")}
           title="新規登録"
-          color={"#010440"}
+          color={THEME_COLOR}
         />
       </View>
     </KeyboardAvoidingView>
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: '#BFF205',
+    backgroundColor: ACCENT_COLOR,
     padding: 40,
   },
   transitionBtn: {

@@ -3,6 +3,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
 import axios from 'axios';
+import { THEME_COLOR, ACCENT_COLOR, EXEC_API_URL } from 'react-native-dotenv';
 
 import { useRecoilValue } from 'recoil';
 import { reservedInfoAtom } from '../../recoil/Atom';
@@ -19,7 +20,7 @@ const ReservedScreen: React.FC = ({ navigation }: any) => {
    */
   const handleCheckIn = async () => {
     try {
-      await axios.put(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation/checkin/${reservedInfo.id}`);
+      await axios.put(`${EXEC_API_URL}/reservation/checkin/${reservedInfo.id}`);
       navigation.navigate('TimeLimit')
     } catch (error) {
       console.log(error.message);
@@ -40,15 +41,15 @@ const ReservedScreen: React.FC = ({ navigation }: any) => {
               <Button
                 onPress={handleCheckIn}
                 title={"チェックイン"}
-                bgColor={"#BFF205"}
-                color={"#010440"}
+                bgColor={ACCENT_COLOR}
+                color={THEME_COLOR}
               />
             </View>
             <View style={styles.button}>
               <Button
                 onPress={() => navigation.goBack()}
                 title={"戻る"}
-                bgColor={"#010440"}
+                bgColor={THEME_COLOR}
                 color={"#fff"}
               />
             </View>

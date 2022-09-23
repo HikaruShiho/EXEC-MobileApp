@@ -5,6 +5,7 @@ import ReservedMachine from '../components/reservation/ReservedMachine';
 import Loading from '../components/Loading';
 import axios from 'axios';
 import * as Notifications from 'expo-notifications';
+import { EXEC_API_URL } from 'react-native-dotenv';
 
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { isLoginAtom, currentGymAtom, reservedInfoAtom } from '../recoil/Atom';
@@ -46,7 +47,7 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
    */
   const getMachineAllAsync = async () => {
     try {
-      const { data } = await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/gym/${currentGym.id}`);
+      const { data } = await axios.get(`${EXEC_API_URL}/gym/${currentGym.id}`);
       setMachines(data.machines);
     } catch (error) {
       console.log(error.response.data);
@@ -58,7 +59,7 @@ const HomeScreen: React.FC = ({ navigation }: any) => {
    */
   const getReservedAsync = async () => {
     try {
-      const { data } = await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation/${1}/${currentGym.id}`);
+      const { data } = await axios.get(`${EXEC_API_URL}/reservation/${1}/${currentGym.id}`);
       setReservedInfoAtom(data ? data : null);
     } catch (error) {
       console.log(error.message);

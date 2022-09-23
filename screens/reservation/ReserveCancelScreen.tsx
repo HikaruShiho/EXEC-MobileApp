@@ -4,6 +4,7 @@ import { CommonActions } from '@react-navigation/native';
 import ReservationStatus from '../../components/reservation/ReservationStatus';
 import Button from '../../components/Button';
 import axios from 'axios';
+import { THEME_COLOR, EXEC_API_URL } from 'react-native-dotenv';
 
 import { useRecoilState } from 'recoil';
 import { reservedInfoAtom } from '../../recoil/Atom';
@@ -40,7 +41,7 @@ const ReserveCancelScreen: React.FC = ({ navigation }: any) => {
    */
   const handleReservationCancel = async () => {
     try {
-      await axios.put(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation/cancel/${reservedInfo.id}`);
+      await axios.put(`${EXEC_API_URL}/reservation/cancel/${reservedInfo.id}`);
       setReservedInfoAtom(null);
     } catch (error) {
       console.log(error.message);
@@ -62,7 +63,7 @@ const ReserveCancelScreen: React.FC = ({ navigation }: any) => {
           <Button
             onPress={() => navigation.goBack()}
             title={"戻る"}
-            bgColor={"#010440"}
+            bgColor={THEME_COLOR}
             color={"#fff"}
           />
         </View>

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import LottieView from 'lottie-react-native';
 
-type Props = { pattern: string; }
+type Props = { pattern?: string; }
 
 const Loading: React.FC<Props> = ({ pattern }) => {
     return (

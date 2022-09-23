@@ -6,6 +6,7 @@ import Loading from '../../components/Loading';
 import Cautions from '../../components/Cations';
 import axios from 'axios';
 import * as Location from 'expo-location';
+import { THEME_COLOR, ACCENT_COLOR, EXEC_API_URL } from 'react-native-dotenv';
 
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentGymAtom, isLoginAtom, reservedInfoAtom } from '../../recoil/Atom';
@@ -25,7 +26,7 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
    */
   const reservationAsync = async () => {
     try {
-      const { data } = await axios.post('https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation', {
+      const { data } = await axios.post(`${EXEC_API_URL}/reservation`, {
         user_id: isLogin.id,
         gym_id: currentGym.id,
         machine_id: route.params.machineId,
@@ -107,8 +108,8 @@ const ReserveCheckScreen: React.FC = ({ route, navigation }: any) => {
         <Button
           onPress={getCurrentLocationAsync}
           title={"予約を確定する"}
-          bgColor={"#BFF205"}
-          color={"#010440"}
+          bgColor={ACCENT_COLOR}
+          color={THEME_COLOR}
         />
       </View>
       {isLoading && <Loading />}

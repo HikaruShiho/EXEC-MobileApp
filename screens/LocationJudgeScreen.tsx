@@ -5,6 +5,7 @@ import axios from 'axios';
 import * as Location from 'expo-location';
 import Loading from '../components/Loading';
 import * as Notifications from 'expo-notifications';
+import { THEME_COLOR, ACCENT_COLOR, EXEC_API_URL } from 'react-native-dotenv';
 
 import { useSetRecoilState } from 'recoil';
 import { currentGymAtom } from '../recoil/Atom';
@@ -43,7 +44,7 @@ const LocationJudgeScreen: React.FC = () => {
    * DBに登録しているジムデータを取得
    */
   useEffect(() => {
-    // setIsLoading(true);
+    setIsLoading(true);
     getAllGymAsnc();
     getCurrentLocationAsync();
   }, []);
@@ -54,7 +55,7 @@ const LocationJudgeScreen: React.FC = () => {
    */
   const getAllGymAsnc = async () => {
     try {
-      const { data } = await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/gym`);
+      const { data } = await axios.get(`${EXEC_API_URL}/gym`);
       setGyms(data);
     } catch (error) {
       console.log(error.message);
@@ -145,7 +146,7 @@ const LocationJudgeScreen: React.FC = () => {
             <Button
               onPress={() => handleCurrentGym(i)}
               title={gym.name}
-              bgColor={"#010440"}
+              bgColor={THEME_COLOR}
               color={"#fff"}
             />
           </View>
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
     height: "100%",
     flex: 1,
     justifyContent: "center",
-    backgroundColor: '#BFF205',
+    backgroundColor: ACCENT_COLOR,
     padding: 40,
     position: "absolute",
     zIndex: 2

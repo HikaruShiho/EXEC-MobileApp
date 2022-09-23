@@ -5,6 +5,7 @@ import axios from 'axios';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
+import { THEME_COLOR, ACCENT_COLOR, EXEC_API_URL } from 'react-native-dotenv';
 
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { auth } from '../../firebase/config';
@@ -54,7 +55,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
    */
   const saveUidApi = async (uid: string) => {
     try {
-      return await axios.post('https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/user', {
+      return await axios.post(`${EXEC_API_URL}/user`, {
         uid: uid,
         push_token: expoPushToken
       });
@@ -124,7 +125,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
         <_Button
           onPress={handleRegister}
           title={"新規登録"}
-          bgColor={"#010440"}
+          bgColor={THEME_COLOR}
           color={"#fff"}
         />
       </View>
@@ -132,7 +133,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
         <Button
           onPress={() => navigation.navigate("LogIn")}
           title="ログイン"
-          color={"#010440"}
+          color={THEME_COLOR}
         />
       </View>
     </KeyboardAvoidingView>
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: '#BFF205',
+    backgroundColor: ACCENT_COLOR,
     padding: 40,
   },
   transitionBtn: {
