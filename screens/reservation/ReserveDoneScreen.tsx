@@ -3,9 +3,11 @@ import { StyleSheet, View, Text } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import Button from '../../components/Button';
 import axios from 'axios';
+import * as Notifications from 'expo-notifications';
+import { THEME_COLOR, ACCENT_COLOR, EXEC_API_URL } from 'react-native-dotenv';
+
 import { useRecoilValue } from 'recoil';
 import { isLoginAtom, reservedInfoAtom } from '../../recoil/Atom';
-import * as Notifications from 'expo-notifications';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -33,7 +35,7 @@ const ReserveDoneScreen: React.FC = ({ navigation }: any) => {
    */
   const previousReservationCountAsync = async () => {
     try {
-      return await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation/previous_reservation_count/${reservedInfo.id}/${reservedInfo.gym_id}/${reservedInfo.machine.id}`);
+      return await axios.get(`${EXEC_API_URL}/reservation/previous_reservation_count/${reservedInfo.id}/${reservedInfo.gym_id}/${reservedInfo.machine.id}`);
     } catch (error) {
       console.log(error.message);
     }
@@ -67,7 +69,7 @@ const ReserveDoneScreen: React.FC = ({ navigation }: any) => {
       <FontAwesome
         name="check-circle"
         size={72}
-        color="#BFF205"
+        color={ACCENT_COLOR}
         style={styles.iconCheck}
       />
       <Text style={styles.iconCheckText}>予約完了</Text>
@@ -76,7 +78,7 @@ const ReserveDoneScreen: React.FC = ({ navigation }: any) => {
         <Button
           onPress={() => navigation.navigate('Home')}
           title={"ホームに戻る"}
-          bgColor={"#010440"}
+          bgColor={THEME_COLOR}
           color={"#fff"}
         />
       </View>

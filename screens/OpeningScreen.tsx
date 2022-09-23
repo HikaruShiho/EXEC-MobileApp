@@ -3,6 +3,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Button from '../components/Button';
 import * as Notifications from 'expo-notifications';
+import { THEME_COLOR, ACCENT_COLOR } from 'react-native-dotenv';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -18,7 +19,7 @@ const OpeningScreen: React.FC = ({ navigation }: any) => {
       <MaterialCommunityIcons
         name="human-queue"
         size={56}
-        color="#010440"
+        color={THEME_COLOR}
         style={{ textAlign: "center" }}
       />
       <Text style={styles.titleText}>ExEc</Text>
@@ -27,14 +28,14 @@ const OpeningScreen: React.FC = ({ navigation }: any) => {
           onPress={() => navigation.navigate("Register")}
           title={"新規登録"}
           bgColor={"#fff"}
-          color={"#010440"}
+          color={THEME_COLOR}
         />
       </View>
       <View style={{ paddingTop: 20 }}>
         <Button
           onPress={() => navigation.navigate("LogIn")}
           title={"ログイン"}
-          bgColor={"#010440"}
+          bgColor={THEME_COLOR}
           color={"#fff"}
         />
       </View>
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: '#BFF205',
+    backgroundColor: ACCENT_COLOR,
     padding: 40,
   },
   titleText: {

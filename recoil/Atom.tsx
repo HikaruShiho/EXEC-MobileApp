@@ -7,10 +7,6 @@ export const isLoginAtom = atom({
 
 export const currentGymAtom = atom({
     key: 'currentGymAtom',
-    // default: {
-    //     id: 1,
-    //     name: "〇〇ジム　原宿店",
-    // },
     default: null,
 });
 

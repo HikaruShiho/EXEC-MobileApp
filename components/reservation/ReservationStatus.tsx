@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import axios from 'axios';
+import { THEME_COLOR, ACCENT_COLOR, EXEC_API_URL } from 'react-native-dotenv';
 
 import { useRecoilValue } from 'recoil';
 import { currentGymAtom } from '../../recoil/Atom';
-import { useState } from 'react';
 
 type Props = {
   machineId: number | null;
@@ -23,7 +23,7 @@ const ReservationStatus: React.FC<Props> = ({ machineId, name, image_path }) => 
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.get(`https://12-shiho-lab13.sakura.ne.jp/EXEC-API/api/reservation/status/${currentGym.id}/${machineId}`);
+        const { data } = await axios.get(`${EXEC_API_URL}/reservation/status/${currentGym.id}/${machineId}`);
         setWaitingPeople(data);
       } catch (error) {
         console.log(error.message);
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   },
   machineName: {
     fontSize: 24,
-    color: "#010440",
+    color: THEME_COLOR,
     fontWeight: "bold"
   },
   reserveStatusWrap: {
