@@ -56,9 +56,6 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
    * @return promise
    */
   const saveUidApi = async (uid: string) => {
-    console.log(expoPushToken);
-    console.log(uid);
-    
     try {
       return await axios.post(`${EXEC_API_URL}/user`, {
         uid: uid,
@@ -77,14 +74,10 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
     let token: string;
     // 実機であるかどうかチェック
     if (Device.isDevice) {
-      console.log("実機です");
-      
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      console.log(status);
       let finalStatus = existingStatus;
       // 通知が許可されているかどうかをチェック
       if (existingStatus !== 'granted') {
-        console.log("通知が許可");
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
@@ -94,7 +87,6 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
       }
       //トークンを取得
       try {
-        console.log("トークンを取得");
         token = (await Notifications.getExpoPushTokenAsync()).data;
         setExpoPushToken(token);
       } catch (e) {
