@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Image, StyleSheet, View } from 'react-native';
 import Button from '../components/Button';
 import * as Notifications from 'expo-notifications';
 import { THEME_COLOR, ACCENT_COLOR } from 'react-native-dotenv';
@@ -16,14 +15,13 @@ Notifications.setNotificationHandler({
 const OpeningScreen: React.FC = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
-      <MaterialCommunityIcons
-        name="human-queue"
-        size={56}
-        color={THEME_COLOR}
-        style={{ textAlign: "center" }}
-      />
-      <Text style={styles.titleText}>ExEc</Text>
-      <View style={{ paddingTop: 32 }}>
+      <View style={{ alignItems: "center" }}>
+        <Image
+          style={{ width: 149, height: 40 }}
+          source={require('../assets/logo.png')}
+        />
+      </View>
+      <View style={{ paddingTop: 40 }}>
         <Button
           onPress={() => navigation.navigate("Register")}
           title={"新規登録"}
@@ -31,7 +29,7 @@ const OpeningScreen: React.FC = ({ navigation }: any) => {
           color={THEME_COLOR}
         />
       </View>
-      <View style={{ paddingTop: 20 }}>
+      <View style={{ paddingTop: 24 }}>
         <Button
           onPress={() => navigation.navigate("LogIn")}
           title={"ログイン"}
@@ -49,12 +47,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: ACCENT_COLOR,
     padding: 40,
-  },
-  titleText: {
-    textAlign: "center",
-    fontSize: 24,
-    fontWeight: "bold",
-    paddingTop: 8,
   },
 });
 
