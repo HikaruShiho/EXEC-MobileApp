@@ -5,6 +5,7 @@ import axios from 'axios';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
+import Loading from '../../components/Loading';
 import { THEME_COLOR, ACCENT_COLOR, EXEC_API_URL } from 'react-native-dotenv';
 
 import { createUserWithEmailAndPassword } from '@firebase/auth';
@@ -17,6 +18,8 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [expoPushToken, setExpoPushToken] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const setIsLoginAtom = useSetRecoilState(isLoginAtom);
 
   useEffect(() => {
@@ -39,6 +42,8 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
    * 【Firebase】ユーザー新規登録処理
    */
   const handleRegister = async () => {
+    setErrorMessage("");
+    setIsLoading(true);
     try {
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
       saveUidApi(user.uid).then((response) => {
@@ -46,8 +51,10 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
         navigation.navigate("LocationJudge");
       }).catch((error) => console.log(error.message));
     } catch (error) {
-      console.log(error.message);
+      console.log(error.code);
+      setErrorMessage(translateErrorMessage(error.code));
     }
+    setIsLoading(false);
   }
 
   /**
@@ -98,6 +105,36 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
     return token;
   }
 
+  /**
+   * エラーメッセージを日本語に変換
+   * @param  {message}
+   * @return {errorMessage}
+   */
+  const translateErrorMessage = (message: string): string => {
+    let japaneseMessage: string = "";
+    switch (message) {
+      case 'auth/invalid-email':
+        japaneseMessage = "メールアドレスを正しく入力してください";
+        break;
+      case 'auth/email-already-exists':
+        japaneseMessage = "入力したアドレスは既に使用されています";
+        break;
+      case 'auth/email-already-in-use':
+        japaneseMessage = "入力したアドレスは既に使用されています";
+        break;
+      case 'auth/invalid-password':
+        japaneseMessage = "パスワードは6文字以上の文字列を指定する必要があります";
+        break;
+      case 'auth/weak-password':
+        japaneseMessage = "パスワードは6文字以上の文字列を指定する必要があります";
+        break;
+      case 'auth/internal-error':
+        japaneseMessage = "パスワードを入力してください";
+        break;
+    }
+    return japaneseMessage;
+  }
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -123,6 +160,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
         onChangeText={setPassword}
         value={password}
       />
+      {errorMessage && <Text style={styles.errorMessage}>{errorMessage}</Text>}
       <View style={{ paddingTop: 32 }}>
         <_Button
           onPress={handleRegister}
@@ -138,6 +176,7 @@ const RegisterScreen: React.FC = ({ navigation }: any) => {
           color={THEME_COLOR}
         />
       </View>
+      {isLoading && <Loading pattern={"default"} />}
     </KeyboardAvoidingView>
   );
 }
@@ -167,6 +206,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 18,
     marginTop: 20,
+  },
+  errorMessage: {
+    color: '#f00',
+    paddingTop: 32,
+    fontSize: 14,
+    fontWeight: "bold"
   },
 });
 

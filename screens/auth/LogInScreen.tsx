@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Button, KeyboardAvoidingView } from 'react-native';
 import _Button from '../../components/Button';
+import Loading from '../../components/Loading';
 import axios from 'axios';
 import { THEME_COLOR, ACCENT_COLOR, EXEC_API_URL } from 'react-native-dotenv';
 
@@ -13,6 +14,8 @@ import { isLoginAtom } from '../../recoil/Atom';
 const LogInScreen: React.FC = ({ navigation }: any) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const setIsLoginAtom = useSetRecoilState(isLoginAtom);
 
   /**
@@ -29,6 +32,7 @@ const LogInScreen: React.FC = ({ navigation }: any) => {
       }).catch((error) => console.log(error.message));
     } catch (error) {
       console.log(error.message);
+      setErrorMessage(translateErrorMessage(error.code));
     }
   };
 
@@ -45,6 +49,30 @@ const LogInScreen: React.FC = ({ navigation }: any) => {
       console.log(error.message);
     }
   };
+
+  /**
+   * エラーメッセージを日本語に変換
+   * @param  {message}
+   * @return {errorMessage}
+   */
+  const translateErrorMessage = (message: string): string => {
+    let japaneseMessage: string = "";
+    switch (message) {
+      case 'auth/invalid-email':
+        japaneseMessage = "メールアドレスを正しく入力してください";
+        break;
+      case 'auth/internal-error':
+        japaneseMessage = "パスワードを入力してください";
+        break;
+      case 'auth/wrong-password':
+        japaneseMessage = "パスワードを正しく入力してください";
+        break;
+      case 'auth/user-not-found':
+        japaneseMessage = "ユーザーが見つかりません\nメールアドレス、パスワードを確認してください";
+        break;
+    }
+    return japaneseMessage;
+  }
 
   return (
     <KeyboardAvoidingView
@@ -71,6 +99,7 @@ const LogInScreen: React.FC = ({ navigation }: any) => {
         onChangeText={setPassword}
         value={password}
       />
+      {errorMessage && <Text style={styles.errorMessage}>{errorMessage}</Text>}
       <View style={{ paddingTop: 32 }}>
         <_Button
           onPress={handleLogin}
@@ -86,6 +115,7 @@ const LogInScreen: React.FC = ({ navigation }: any) => {
           color={THEME_COLOR}
         />
       </View>
+      {isLoading && <Loading pattern={"default"} />}
     </KeyboardAvoidingView>
   );
 }
@@ -115,6 +145,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 18,
     marginTop: 20,
+  },
+  errorMessage: {
+    color: '#f00',
+    paddingTop: 32,
+    fontSize: 14,
+    fontWeight: "bold"
   },
 });
 
