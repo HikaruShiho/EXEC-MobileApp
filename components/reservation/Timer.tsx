@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { MAXIMUM_USAGE_TIME } from 'react-native-dotenv';
 
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
 
@@ -35,7 +36,7 @@ const Timer: React.FC<Props> = ({ handleCheckOut }) => {
       <View style={styles.timerWrap}>
         <CountdownCircleTimer
           isPlaying={isPlaying}
-          duration={1200}
+          duration={MAXIMUM_USAGE_TIME}
           colors={["#010440", "#F7B801", "#A30000", "#A30000"]}
           colorsTime={[1200, 800, 400, 0]}
           size={280}

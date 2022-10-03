@@ -5,7 +5,7 @@ import axios from 'axios';
 import * as Location from 'expo-location';
 import Loading from '../components/Loading';
 import * as Notifications from 'expo-notifications';
-import { THEME_COLOR, ACCENT_COLOR, EXEC_API_URL } from 'react-native-dotenv';
+import { THEME_COLOR, ACCENT_COLOR, EXEC_API_URL, MAXIMUM_DISTANCE } from 'react-native-dotenv';
 
 import { useSetRecoilState } from 'recoil';
 import { currentGymAtom } from '../recoil/Atom';
@@ -81,7 +81,7 @@ const LocationJudgeScreen: React.FC = () => {
    */
   const handleCurrentGym = (i: number): void => {
     const distance = calcDistance(currentLocation.latitude, currentLocation.longitude, gyms[i].lat, gyms[i].long);
-    if (distance <= 300) {
+    if (distance <= MAXIMUM_DISTANCE) {
       Alert.alert(
         gyms[i].name,
         'トレーニング頑張りましょう！！',
