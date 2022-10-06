@@ -10,10 +10,9 @@ const Cautions: React.FC = () => {
                 <Text style={styles.cationTitle}>注意事項</Text>
             </View>
             <View style={styles.cationBody}>
-                <Text style={styles.cationText}>・ここに入ります</Text>
-                <Text style={styles.cationText}>・ここに入ります</Text>
-                <Text style={styles.cationText}>・ここに入ります</Text>
-                <Text style={styles.cationText}>・ここに入ります</Text>
+                <Text style={styles.cationText}>・順番がきましたら通知が送信されます</Text>
+                <Text style={styles.cationText}>・通知受信後、<Text style={{ color: "#F64E4E", fontWeight: "bold" }}>5分以内</Text>にチェックインしてください</Text>
+                <Text style={styles.cationText}>・<Text style={{ color: "#F64E4E", fontWeight: "bold" }}>5分以内</Text>にチェックインしないと、自動キャンセルとなります</Text>
             </View>
         </View>
     )
