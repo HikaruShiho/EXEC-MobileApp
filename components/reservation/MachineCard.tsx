@@ -8,7 +8,6 @@ import { currentGymAtom } from '../../recoil/Atom';
 const MachineCard = ({ onPress, machine }) => {
   const [waitingPeople, setWaitingPeople] = useState<number>(0);
   const currentGym = useRecoilValue(currentGymAtom);
-  console.log(`${machine.name}：${waitingPeople}`);
 
   useEffect(() => {
     (async () => {
