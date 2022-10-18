@@ -1,6 +1,25 @@
+import { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import axios from 'axios';
+import { EXEC_API_URL } from 'react-native-dotenv';
+import { useRecoilValue } from 'recoil';
+import { currentGymAtom } from '../../recoil/Atom';
 
-const MachineCard = ({onPress, machine }) => {
+const MachineCard = ({ onPress, machine }) => {
+  const [waitingPeople, setWaitingPeople] = useState<number>(0);
+  const currentGym = useRecoilValue(currentGymAtom);
+  console.log(`${machine.name}：${waitingPeople}`);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.get(`${EXEC_API_URL}/reservation/status/${currentGym.id}/${machine.id}`);
+        setWaitingPeople(data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    })();
+  });
 
   return (
     <TouchableOpacity
@@ -35,7 +54,11 @@ const MachineCard = ({onPress, machine }) => {
         <Text style={styles.machineName}>{machine.name}</Text>
         <Text style={styles.reseveBtn}>予約状況確認</Text>
       </View>
-      <View style={styles.dot} />
+      <View style={[
+        styles.dot, {
+          backgroundColor: waitingPeople === 0 ? "#2FCB52" : waitingPeople === 1 ? "#FFD337" : "#F64E4E"
+        }
+      ]} />
     </TouchableOpacity>
   )
 }
@@ -87,7 +110,6 @@ const styles = StyleSheet.create({
     height: 12,
     borderRadius: 6,
     overflow: "hidden",
-    backgroundColor: "#2FCB52",
     position: "absolute",
     top: 12,
     right: 12,
