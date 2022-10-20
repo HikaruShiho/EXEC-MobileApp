@@ -81,7 +81,7 @@ const TimeLimitScreen: React.FC = ({ navigation }: any) => {
       <View style={styles.checkOutButton}>
         <Button
           onPress={handleCheckOut}
-          title={"チェックアウト"}
+          title={"利用終了"}
           bgColor={ACCENT_COLOR}
           color={"#010440"}
         />

@@ -40,7 +40,7 @@ const ReservedScreen: React.FC = ({ navigation }: any) => {
             <View style={styles.checkInButton}>
               <Button
                 onPress={handleCheckIn}
-                title={"チェックイン"}
+                title={"利用開始"}
                 bgColor={ACCENT_COLOR}
                 color={THEME_COLOR}
               />
