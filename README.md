@@ -1,9 +1,8 @@
 # トレーニングマシン予約アプリ『EXEC』
-
 ![OGP](https://user-images.githubusercontent.com/87953076/198834499-7a485c43-0572-4c23-9b70-85f23bb80420.jpg)
 
 # Demo
-https://user-images.githubusercontent.com/87953076/198835780-95087bb3-9f89-43c0-a707-f04c71ce73c1.mp4
+https://user-images.githubusercontent.com/87953076/204056275-a48fec69-3be4-4692-bbd2-7c13a2819997.mp4
 
 # Overview
 ジム会員が使用するトレーニングマシンの順番待ちを管理するアプリ。<br>
